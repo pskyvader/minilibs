@@ -1,0 +1,67 @@
+<!-- Example, using Fancybox as gallery -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>ImageHeight Example</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Image Height Example</h1>
+        <hr class="my-4">
+    </div>
+
+    <div class="myclasscontainer container">
+        <a href="https://picsum.photos/200/300" data-fancybox="gallery" >
+          <img src="https://picsum.photos/200/300" alt="example 1" />
+        </a>
+    </div>
+
+    <div class="container">
+        <hr class="my-4">
+        <h3>Libraries</h3>
+        <ul>
+            <li>
+                <a href="https://fancyapps.com/fancybox/3/">Fancybox - Gallery slideshow</a>
+            </li>
+            <li>
+                <a href="https://getbootstrap.com/">Bootstrap 4</a>
+            </li>
+            <li>
+                <a href="https://picsum.photos/">Lorem Picsum - Example images</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="ImageHeight.js"></script>
+    <script>
+        for(i=0;i<10;i++){
+            var width=parseInt(Math.random()*1000+500);
+            var height=parseInt(Math.random()*1000+500);
+            var tpl=`<a href="https://picsum.photos/${width}/${height}" data-fancybox="gallery" > <img src="https://picsum.photos/${width}/${height}" alt="example ${i}" /> </a>`;
+            var img=$(tpl);
+            $('.myclasscontainer').append(img);
+        }
+
+    </script>
+    
+    <script>
+        new ImageHeight('.myclasscontainer', {
+            minwidth: 300,
+            minheight: 100,
+            maxrow: 5,
+            margin: 10
+        });
+    </script>
+</body>
+
+</html>

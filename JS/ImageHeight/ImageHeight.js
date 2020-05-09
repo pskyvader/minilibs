@@ -1,33 +1,8 @@
-/*
-
-Script para crear galeria de imagenes tipo masonry, con el mismo alto por fila
-
-template ejemplo 1:
-<div class="myclasscontainer">
-    <a href="url"><img src="url" alt="" /></a>
-</div>
-
-template ejemplo 2:
-<div class="myclasscontainer">
-    <img src="url" alt="" />
-</div>
-
-new ImageHeight('.myclasscontainer',{
-    minwidth:300,
-    minheight:100,
-    maxrow:5,
-    margin:null //opcional en caso de que falle el calculo automatico
-});
-
-*/
-
-
-
 class ImageHeight {
     minwidth = 300;
     minheight = 100;
     maxrow = 5;
-    margin = null;
+    margin = 0;
     container = null;
     imagelist = [];
     last_containerwidth = 0;
@@ -53,12 +28,11 @@ class ImageHeight {
         $(window).on("load", function() {
             //reset de estilos para evitar errores de calculo
             $("a", t.container).css("font-size", 0).css("padding", 0).css("margin", 0);
-            $("img", t.container).css("max-width", "100%");
+            console.log(t.margin);
+            $("img", t.container).css("max-width", "100%").css("padding",t.margin);
+
             //agregar imagenes a la lista total de imagenes 
             $("img", t.container).each(function() {
-                if (t.margin == null) {
-                    t.margin = $(this).outerWidth(true) - $(this).width();
-                }
                 t.imagelist.push($(this));
             });
             t.setcolumns();

@@ -1,6 +1,6 @@
 ## Image Height
-Librarie for masonry style image gallery, with same height by row. Requires [JQuery](https://code.jquery.com/).
-#### How to use 
+Library for masonry style image gallery, with same height by row. Requires [JQuery](https://code.jquery.com/).
+### How to use 
 Download the file "ImageHeight.js" and add it to your html:
 ```html
 <script src="yourproject/ImageHeight.js"></script>
