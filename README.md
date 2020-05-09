@@ -9,9 +9,9 @@ Minilibraries for lazy people
 ### Image Height
 Librarie for masonry style image gallery, with same height by row. Requires [JQuery](https://code.jquery.com/).
 #### How to use 
-Download the file "imageheight.js" and add it to your html:
+Download the file "ImageHeight.js" and add it to your html:
 ```html
-<script src="yourproject/imageheight.js"></script>
+<script src="yourproject/ImageHeight.js"></script>
 ```
 Start with a container and put some images:
 ```html
