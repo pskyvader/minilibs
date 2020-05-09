@@ -8,6 +8,10 @@ class ImageHeight {
     last_containerwidth = 0;
     last_column = 0;
     containerwidth = null;
+
+
+    mini=0;
+
     constructor(container, params) {
         if (typeof jQuery == 'undefined') {
             throw new Error('Jquery must be defined');
@@ -31,8 +35,13 @@ class ImageHeight {
             $("img", t.container).css("max-width", "100%").css("padding",t.margin);
 
             //agregar imagenes a la lista total de imagenes 
+            let i=0;
             $("img", t.container).each(function() {
-                t.imagelist.push($(this));
+                t.imagelist.push({"img": $(this),"loaded":false,"position":i});
+                $(this).on('load',function(){
+                    this.loaded=true;
+                });
+                i++;
             });
             t.setcolumns();
             $(window).on("resize", t.setcolumns);
@@ -81,35 +90,42 @@ class ImageHeight {
         // crear filas de imagenes que entren en el ancho maximo 
         //(ej: 2 fotos de 300 de ancho caben en 800 px, pero 3 fotos no. 
         // entonces la tercera foto pasa a la siguiente fila) 
-        let t=this;
-        $.each(t.imagelist,function(){
-            this.loaded=false;
-            this.on('load',function(){
-                this.loaded=true;
-            });
-        });
+
         while (i < this.imagelist.length) {
+            if (this.imagelist[i].loaded){
+                this.setrow(this.imagelist[i].position,maxcolumn);
+            }
+            i++;
+        }
+    }
+
+    setrow=(maxi,maxcolumn)=>{
+        let t=this;
+        let i=t.mini;
+        while (i < maxi) {
             let totalwidth = 0;
             let count = 0;
             let imagerow = [];
             //crea cada una de las filas 
             while (totalwidth <= t.containerwidth && count < maxcolumn && i < t.imagelist.length) {
-                let currentwidth = $(t.imagelist[i]).width();
-                console.log(t.imagelist[i].loaded);
+                let currentwidth = $(t.imagelist[i].img).width();
                 if (currentwidth < t.minwidth) currentwidth = t.minwidth;
                 //ajusto al ancho minimo para evitar que las fotos se vean demasiado pequeñas 
                 totalwidth += currentwidth;
                 if (totalwidth <= t.containerwidth || imagerow.length == 0) {
-                    imagerow.push(t.imagelist[i]);
+                    imagerow.push(t.imagelist[i].img);
                     i++;
                 }
                 count++;
             }
-            
             //por cada fila se define el ancho que tendran las fotos para caber en el ancho del contenedor correspondiente 
             t.setwidth(imagerow);
+            t.mini=i;
         }
     }
+
+
+
 
 
 
