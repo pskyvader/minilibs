@@ -22,13 +22,12 @@ class ImageHeight {
         this.minwidth = params.minwidth || this.minwidth;
         this.minheight = params.minheight || this.minheight;
         this.maxrow = params.maxrow || this.maxrow;
-        this.margin = params.margin * 2 || this.margin;
+        this.margin = params.margin|| this.margin;
         let t = this;
         //ejecutar en cada inicio o resize solo despues de terminar la carga 
-        $(window).on("load", function() {
+        $(document).ready(function(){
             //reset de estilos para evitar errores de calculo
             $("a", t.container).css("font-size", 0).css("padding", 0).css("margin", 0);
-            console.log(t.margin);
             $("img", t.container).css("max-width", "100%").css("padding",t.margin);
 
             //agregar imagenes a la lista total de imagenes 
@@ -38,6 +37,18 @@ class ImageHeight {
             t.setcolumns();
             $(window).on("resize", t.setcolumns);
         });
+        /*$(window).on("load", function() {
+            //reset de estilos para evitar errores de calculo
+            $("a", t.container).css("font-size", 0).css("padding", 0).css("margin", 0);
+            $("img", t.container).css("max-width", "100%").css("padding",t.margin);
+
+            //agregar imagenes a la lista total de imagenes 
+            $("img", t.container).each(function() {
+                t.imagelist.push($(this));
+            });
+            t.setcolumns();
+            $(window).on("resize", t.setcolumns);
+        });*/
     }
     setcolumns = () => {
         this.containerwidth = $(this.container).width();
@@ -62,48 +73,54 @@ class ImageHeight {
         this.last_containerwidth = this.containerwidth;
         this.last_column = maxcolumn;
         //funcion para separar en filas 
-        let imagerows = this.splitrows(maxcolumn);
-        //por cada fila se define el ancho que tendran las fotos para caber en el ancho del contenedor correspondiente 
-        let t = this;
-        $.each(imagerows, function() {
-            t.setwidth($(this));
-        });
+        this.splitrows(maxcolumn);
         this.container.height("auto");
     }
     splitrows = (maxcolumn) => {
         let i = 0;
-        let imagerows = [];
         // crear filas de imagenes que entren en el ancho maximo 
         //(ej: 2 fotos de 300 de ancho caben en 800 px, pero 3 fotos no. 
         // entonces la tercera foto pasa a la siguiente fila) 
+        let t=this;
+        $.each(t.imagelist,function(){
+            this.loaded=false;
+            this.on('load',function(){
+                this.loaded=true;
+            });
+        });
         while (i < this.imagelist.length) {
             let totalwidth = 0;
             let count = 0;
             let imagerow = [];
             //crea cada una de las filas 
-            while (totalwidth <= this.containerwidth && count < maxcolumn && i < this.imagelist.length) {
-                let currentwidth = $(this.imagelist[i]).width();
-                if (currentwidth < this.minwidth) currentwidth = this.minwidth;
+            while (totalwidth <= t.containerwidth && count < maxcolumn && i < t.imagelist.length) {
+                let currentwidth = $(t.imagelist[i]).width();
+                console.log(t.imagelist[i].loaded);
+                if (currentwidth < t.minwidth) currentwidth = t.minwidth;
                 //ajusto al ancho minimo para evitar que las fotos se vean demasiado pequeñas 
                 totalwidth += currentwidth;
-                if (totalwidth <= this.containerwidth || imagerow.length == 0) {
-                    imagerow.push(this.imagelist[i]);
+                if (totalwidth <= t.containerwidth || imagerow.length == 0) {
+                    imagerow.push(t.imagelist[i]);
                     i++;
                 }
                 count++;
             }
-            imagerows.push(imagerow);
+            
+            //por cada fila se define el ancho que tendran las fotos para caber en el ancho del contenedor correspondiente 
+            t.setwidth(imagerow);
         }
-        return imagerows;
     }
+
+
+
     setwidth = (row) => {
-        console.log('setwidth');
         //intenta calcular el tamaño optimo, dada la precision (para evitar salirse del ancho maximo) 
         let combinedWidth = 0;
         $.each(row, function() {
             combinedWidth += $(this).width();
         });
-        let diff = (this.containerwidth - this.margin * row.length) / combinedWidth;
+        
+        let diff = (this.containerwidth - this.margin*2 * row.length) / combinedWidth;
         $.each(row, function() {
             $(this).width(diff * $(this).width()).height("auto");
         });
