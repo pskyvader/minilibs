@@ -19,7 +19,7 @@ class ImageHeight {
     timeout = null;
 
     constructor(container, params) {
-        if (typeof jQuery == 'undefined') {
+        if (typeof jQuery == 'undefined' || typeof $ == 'undefined') {
             throw new Error('Jquery must be defined');
         }
         if (typeof container != "string") {
@@ -29,6 +29,8 @@ class ImageHeight {
         if (this.container.length != 1) {
             throw new Error('Container object "' + container + '" not valid');
         }
+
+
         this.minwidth = params.minwidth || this.minwidth;
         this.minheight = params.minheight || this.minheight;
         this.maxrow = params.maxrow || this.maxrow;
@@ -41,12 +43,11 @@ class ImageHeight {
         $("img", t.container).css("max-width", "100%").css("padding", t.margin).hide();
 
         //agregar imagenes a la lista total de imagenes 
-        let i = 0;
         $("img", t.container).each(function() {
             let img = {
                 "img": $(this),
                 "loaded": false,
-                "position": i
+                "error":false
             };
             t.imagelist.push(img);
             $(this).on('load', function() {
@@ -56,11 +57,15 @@ class ImageHeight {
                 img.loaded = true;
                 img.error = true;
             });
-            i++;
         });
+
+        if(t.imagelist.length==0){
+            throw new Error('No valid images to show');
+        }
+
+
         t.setcolumns();
         $(window).on("resize", t.setcolumns);
-
     }
     setcolumns = () => {
         this.containerwidth = $(this.container).width();
@@ -107,7 +112,7 @@ class ImageHeight {
                 break;
             } else {
                 //si muestra errores, la foto fallida sera visible
-                if (!this.imagelist[i].error || this.showerrors) {
+                if (this.showerrors || !this.imagelist[i].error) {
                     this.imagelist[i].img.show();
                 }
             }
