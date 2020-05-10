@@ -33,7 +33,7 @@ new ImageHeight('.myclasscontainer', {
 });
 ```
 
-You can also try the example file. Just Download both files in the same folder
+**You can also try the example file. Just Download both files in the same folder**
 
 
 
