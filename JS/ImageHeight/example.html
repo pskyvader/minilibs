@@ -21,9 +21,11 @@
         </a>
     </div>
 
-    <div class="container">
+    <br>
+
+    <div class="container my-4">
         <hr class="my-4">
-        <h3>Libraries</h3>
+        <h3>External Libraries</h3>
         <ul>
             <li>
                 <a href="https://fancyapps.com/fancybox/3/">Fancybox - Gallery slideshow</a>
@@ -46,8 +48,11 @@
     <script>
         var exampleimages=10;
         for(i=0;i<exampleimages;i++){
-            var width=parseInt(Math.random()*1000+500);
-            var height=parseInt(Math.random()*1000+500);
+            var width=parseInt(Math.random()*1000+100);
+            var height=parseInt(Math.random()*1000+100);
+            if(i==50){
+                width=-1;
+            }
             var tpl=`<a href="https://picsum.photos/${width}/${height}" data-fancybox="gallery" > <img src="https://picsum.photos/${width}/${height}" alt="example ${i}" /> </a>`;
             var img=$(tpl);
             $('.myclasscontainer').append(img);
@@ -60,7 +65,8 @@
             minwidth: 300,
             minheight: 100,
             maxrow: 5,
-            margin: 10
+            margin: 10,
+            showerrors:true // If you want to see broken images
         });
     </script>
 </body>
