@@ -46,13 +46,10 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="ImageHeight.js"></script>
     <script>
-        var exampleimages=10;
+        var exampleimages=100;
         for(i=0;i<exampleimages;i++){
-            var width=parseInt(Math.random()*1000+100);
-            var height=parseInt(Math.random()*1000+100);
-            if(i==50){
-                width=-1;
-            }
+            var width=parseInt(Math.random()*1000+300);
+            var height=parseInt(Math.random()*1000+300);
             var tpl=`<a href="https://picsum.photos/${width}/${height}" data-fancybox="gallery" > <img src="https://picsum.photos/${width}/${height}" alt="example ${i}" /> </a>`;
             var img=$(tpl);
             $('.myclasscontainer').append(img);
