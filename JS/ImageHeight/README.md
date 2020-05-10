@@ -29,7 +29,7 @@ new ImageHeight('.myclasscontainer', {
     minheight: 100,
     maxrow: 5,
     margin: 10,
-    showerrors:false // If you want to see broken images
+    showerrors:false // If you want to see broken images and console logs
 });
 ```
 
