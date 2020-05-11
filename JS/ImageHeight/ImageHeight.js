@@ -69,7 +69,7 @@
             $(document).ready(function() {
                 t.message("Start Process...");
                 t.setcolumns();
-                $(window).on("resize", t.setcolumns);
+                $(window).on("load resize", t.setcolumns);
             });
         }
 
@@ -130,28 +130,34 @@
             }
 
             let i = 0;
+            let j = 0;
+            let lastloaded=0;
             // crear filas de imagenes que entren en el ancho maximo 
             //(ej: 2 fotos de 300 de ancho caben en 800 px, pero 3 fotos no. 
             // entonces la tercera foto pasa a la siguiente fila) 
 
-            while (i < this.imagelist.length) {
-                if (!this.imagelist[i].loaded) {
-                    this.message("Image", i, "Not loaded yet");
-                    break;
+            while (j < this.imagelist.length) {
+                if (!this.imagelist[j].loaded) {
+                    //this.message("Image", i, "Not loaded yet");
+                    //break;
                 } else {
+                    i++;
+                    lastloaded=j;
                     //si muestra errores, la foto fallida sera visible
-                    if (this.showerrors || !this.imagelist[i].error) {
-                        this.message("Show image", i);
-                        this.imagelist[i].img.fadeIn();
+                    if (this.showerrors || !this.imagelist[j].error) {
+                        this.message("Show image", j);
+                        this.imagelist[j].img.fadeIn().width("auto").height(this.minheight*2);
                     }
                 }
-                i++;
+                j++;
             }
+
+
             if (i < this.imagelist.length) {
                 this.message("Image max calculate", i);
                 if (i > this.lasti) {
                     this.lasti = i;
-                    this.setrow(i);
+                    this.setrow(lastloaded);
                 }
                 if (this.timeout != null) {
                     clearTimeout(this.timeout);
@@ -163,7 +169,6 @@
                 this.setrow(i);
                 this.setcolumns();
             }
-
             console.log("split rows finished");
         }
 
