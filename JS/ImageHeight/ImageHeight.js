@@ -34,7 +34,7 @@ class ImageHeight {
         this.minwidth = params.minwidth || this.minwidth;
         this.minheight = params.minheight || this.minheight;
         this.maxrow = params.maxrow || this.maxrow;
-        this.margin = params.margin || this.margin;
+        this.margin = (parseInt(params.margin) >=0)?params.margin: this.margin;
         this.showerrors = params.showerrors || this.showerrors;
         let t = this;
 
@@ -137,7 +137,7 @@ class ImageHeight {
                 //si muestra errores, la foto fallida sera visible
                 if (this.showerrors || !this.imagelist[i].error) {
                     this.message("Show image",i);
-                    this.imagelist[i].img.show();
+                    this.imagelist[i].img.fadeIn();
                 }
             }
             i++;
