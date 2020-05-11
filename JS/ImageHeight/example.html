@@ -15,7 +15,7 @@
         <h1>Image Height Example</h1>
         <hr class="my-4">
     </div>
-    <div class="myclasscontainer container2" id="lightgallery">
+    <div class="myclasscontainer container" id="lightgallery">
         <a href="https://picsum.photos/200/300">
             <img src="https://picsum.photos/200/300" alt="example 1" />
         </a>
@@ -44,7 +44,7 @@
     <script src="ImageHeight.js"></script>
     <script>
         //Add Example images to container
-        var exampleimages = 100;
+        var exampleimages = 20;
         for (i = 0; i < exampleimages; i++) {
             var width = parseInt(Math.random() * 1000 + 300);
             var height = parseInt(Math.random() * 1000 + 300);
@@ -58,9 +58,7 @@
         var gallery = "lightgallery";
 
         if (gallery == "lightgallery") {
-            $(document).ready(function(){
-                $('#lightgallery').lightGallery();
-            });
+            $('#lightgallery').lightGallery();
         } else if (gallery == "fancybox") {
             $("#lightgallery a").on('click', function() {
                 $.fancybox.open($("#lightgallery a"));
@@ -69,12 +67,11 @@
         }
     </script>
     <script>
-
         $('.myclasscontainer').ImageHeight({
             minwidth: 300,
             minheight: 100,
             maxrow: 5,
-            margin: 0,
+            margin: 10,
             showerrors: true // If you want to see broken images And console logs
         });
     </script>

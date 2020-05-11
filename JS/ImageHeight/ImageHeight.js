@@ -8,6 +8,7 @@
         margin = 10;
         showerrors = false;
 
+
         imagelist = [];
         last_containerwidth = 0;
         last_column = 0;
@@ -26,11 +27,11 @@
             }
 
 
-            this.minwidth = params.minwidth || this.minwidth;
-            this.minheight = params.minheight || this.minheight;
-            this.maxrow = params.maxrow || this.maxrow;
-            this.margin = (parseInt(params.margin) >= 0) ? params.margin : this.margin;
-            this.showerrors = params.showerrors || this.showerrors;
+            this.minwidth = params.minwidth;
+            this.minheight = params.minheight;
+            this.maxrow = params.maxrow;
+            this.margin = params.margin;
+            this.showerrors = params.showerrors;
             let t = this;
 
             t.message("Container", t.container);
@@ -82,7 +83,16 @@
 
         setcolumns = () => {
             this.message("Set Columns");
-            this.containerwidth = $(this.container).width();
+            if (!this.allloaded) {
+                this.container.height(1000000000);
+                this.containerwidth = $(this.container).width();
+                this.container.height("auto");
+            } else {
+                this.containerwidth = $(this.container).width();
+            }
+
+
+            this.message("Container width", this.containerwidth);
             // obtener ancho maximo 
             this.maxcolumn = parseInt(this.containerwidth / this.minwidth);
             // cantidad de fotos maximas en esta resolucion 
@@ -151,6 +161,7 @@
                 this.message("All images loaded");
                 this.allloaded = true;
                 this.setrow(i);
+                this.setcolumns();
             }
 
             console.log("split rows finished");
@@ -158,7 +169,6 @@
 
         setrow = (maxi) => {
             this.message("Set rows");
-            this.container.height(1000000000);
             //alto del contenedor muy largo para controlar la barra de desplazamiento 
             $('.split,.loading', this.container).remove();
             let t = this;
@@ -193,7 +203,6 @@
             if (maxi < this.imagelist.length) {
                 this.container.append("<div class='loading'>loading...</div>");
             }
-            this.container.height("auto");
         }
 
 

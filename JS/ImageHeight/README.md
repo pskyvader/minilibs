@@ -24,12 +24,12 @@ You can also use links:
 And start the script
 
 ```javascript
-new ImageHeight('.myclasscontainer', {
+$('.myclasscontainer').ImageHeight({
     minwidth: 300,
     minheight: 100,
     maxrow: 5,
-    margin: 10,
-    showerrors:false // If you want to see broken images and console logs
+    margin: 0,
+    showerrors: true // If you want to see broken images And console logs
 });
 ```
 
