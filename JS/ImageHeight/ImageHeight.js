@@ -17,7 +17,7 @@
         maxcolumn = 1;
         allloaded = false;
 
-        timeoutstep = 50;
+        timeoutstep = 500;
         timeout = null;
 
         constructor(container, params) {
@@ -39,7 +39,7 @@
 
             //reset de estilos para evitar errores de calculo
             $("a", t.container).css("font-size", 0).css("padding", 0).css("margin", 0);
-            $("img", t.container).css("max-width", "100%").css("padding", t.margin).hide();
+            $("img", t.container).css("max-width", "100%").css("padding", t.margin).hide().width("auto").height(this.minheight);
 
             //agregar imagenes a la lista total de imagenes 
             $("img", t.container).each(function() {
@@ -138,7 +138,7 @@
 
             while (j < this.imagelist.length) {
                 if (!this.imagelist[j].loaded) {
-                    //this.message("Image", i, "Not loaded yet");
+                    this.message("Image", i, "Not loaded yet");
                     //break;
                 } else {
                     i++;
@@ -146,18 +146,34 @@
                     //si muestra errores, la foto fallida sera visible
                     if (this.showerrors || !this.imagelist[j].error) {
                         this.message("Show image", j);
-                        this.imagelist[j].img.fadeIn().width("auto").height(this.minheight*2);
+                        this.imagelist[j].img.fadeIn();
                     }
                 }
                 j++;
             }
+            
+ /*
+            while (i < this.imagelist.length) {
+                if (!this.imagelist[i].loaded) {
+                    this.message("Image", i, "Not loaded yet");
+                    break;
+                } else {
+                    //si muestra errores, la foto fallida sera visible
+                    if (this.showerrors || !this.imagelist[i].error) {
+                        this.message("Show image", i);
+                        this.imagelist[i].img.fadeIn();
+                    }
+                }
+                i++;
+            }*/
+            i=Math.max(lastloaded,Math.min(this.maxcolumn*parseInt((timeoutstep/this.timeoutstep)/2),this.imagelist.length));
 
 
             if (i < this.imagelist.length) {
                 this.message("Image max calculate", i);
                 if (i > this.lasti) {
                     this.lasti = i;
-                    this.setrow(lastloaded);
+                    this.setrow(i);
                 }
                 if (this.timeout != null) {
                     clearTimeout(this.timeout);
@@ -169,7 +185,7 @@
                 this.setrow(i);
                 this.setcolumns();
             }
-            console.log("split rows finished");
+            this.message("split rows finished");
         }
 
         setrow = (maxi) => {
