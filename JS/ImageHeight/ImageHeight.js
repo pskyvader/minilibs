@@ -6,6 +6,7 @@
         minheight = 100;
         maxrow = 5;
         margin = 10;
+        placeholder = false;
         showerrors = false;
 
 
@@ -17,7 +18,7 @@
         maxcolumn = 1;
         allloaded = false;
 
-        timeoutstep = 200;
+        timeoutstep = 300;
         timeout = null;
 
         constructor(container, params) {
@@ -31,6 +32,7 @@
             this.minheight = params.minheight;
             this.maxrow = params.maxrow;
             this.margin = params.margin;
+            this.placeholder = params.placeholder;
             this.showerrors = params.showerrors;
             let t = this;
 
@@ -39,7 +41,7 @@
 
             //reset de estilos para evitar errores de calculo
             $("a", t.container).css("font-size", 0).css("padding", 0).css("margin", 0);
-            $("img", t.container).css("max-width", "100%").css("margin", t.margin).css("background","grey").hide();
+            $("img", t.container).css("max-width", "100%").css("margin", t.margin).css("background","#cccccc").hide().height(this.minheight);
 
             //agregar imagenes a la lista total de imagenes 
             $("img", t.container).each(function() {
@@ -154,20 +156,22 @@
                 }
                 j++;
             }
-
-            //muestra al menos todos los cargados consecutivamente, va agregando al menos una fila visible por iteracion
-            console.log("first loaded",firstloaded,noloaded);
-            i=Math.min(lastloaded+1,(firstloaded+1)*3);
-            i=Math.min(i,this.maxcolumn*parseInt((timeoutstep/this.timeoutstep)));
-            i=Math.min(i,this.imagelist.length);
+            if(this.placeholder){
+                //muestra al menos todos los cargados consecutivamente, va agregando al menos una fila visible por iteracion
+                i=Math.min(lastloaded+1,(firstloaded+1)*(timeoutstep/this.timeoutstep));
+                i=Math.max(i,this.maxcolumn*parseInt((timeoutstep/this.timeoutstep)+3));
+                i=Math.min(i,this.imagelist.length);
+            }else{
+                i=firstloaded+1;
+            }
 
             j=0;
             while (j<i) {
                 //muestra las fotos cargadas hasta este punto
-                if (this.imagelist[j].loaded && (this.showerrors || !this.imagelist[j].error)) {
+                if (this.placeholder || this.imagelist[j].loaded && (this.showerrors || !this.imagelist[j].error)) {
+                    this.message("Show image", j);
+                    this.imagelist[j].img.fadeIn();
                 }
-                this.message("Show image", j);
-                this.imagelist[j].img.fadeIn();
                 j++;
             }
 
@@ -286,6 +290,7 @@
             minheight: ImageHeight.minheight,
             maxrow: ImageHeight.maxrow,
             margin: ImageHeight.margin,
+            placeholder: ImageHeight.placeholder,
             showerrors: ImageHeight.showerrors // If you want to see broken images And console logs
         }, options);
 
