@@ -39,7 +39,7 @@
 
             //reset de estilos para evitar errores de calculo
             $("a", t.container).css("font-size", 0).css("padding", 0).css("margin", 0);
-            $("img", t.container).css("max-width", "100%").css("padding", t.margin).hide();
+            $("img", t.container).css("max-width", "100%").css("margin", t.margin).css("background","grey").hide();
 
             //agregar imagenes a la lista total de imagenes 
             $("img", t.container).each(function() {
@@ -156,17 +156,18 @@
             }
 
             //muestra al menos todos los cargados consecutivamente, va agregando al menos una fila visible por iteracion
-            i=Math.min(firstloaded,this.maxcolumn*parseInt((timeoutstep/this.timeoutstep)/2));
-            i=Math.max(lastloaded+1,i);
+            console.log("first loaded",firstloaded,noloaded);
+            i=Math.min(lastloaded+1,(firstloaded+1)*3);
+            i=Math.min(i,this.maxcolumn*parseInt((timeoutstep/this.timeoutstep)));
             i=Math.min(i,this.imagelist.length);
 
             j=0;
             while (j<i) {
                 //muestra las fotos cargadas hasta este punto
                 if (this.imagelist[j].loaded && (this.showerrors || !this.imagelist[j].error)) {
-                    this.message("Show image", j);
-                    this.imagelist[j].img.fadeIn();
                 }
+                this.message("Show image", j);
+                this.imagelist[j].img.fadeIn();
                 j++;
             }
 
@@ -239,9 +240,16 @@
             //calculo del ancho optimo
             let combinedWidth = 0;
             let errorwidth=0;
+            let last_width=0;
+            let last_height=0;
             $.each(row, function() {
                 if($(this).width()==0){
                     errorwidth++;
+                }else{
+                    if(last_width==0 || last_width>$(this).width()){
+                        last_width=$(this).width();
+                        last_height=$(this).height();
+                    }
                 }
                 combinedWidth += $(this).width();
             });
@@ -256,6 +264,9 @@
             } else {
                 $.each(row, function() {
                     $(this).width( diff * $(this).width()).height("auto");
+                    if($(this).width()==0){
+                        $(this).width(diff * last_width).height(diff * last_height);
+                    }
                 });
             }
 
