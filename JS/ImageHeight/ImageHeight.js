@@ -139,7 +139,7 @@
             // crear filas de imagenes que entren en el ancho maximo 
             //(ej: 2 fotos de 300 de ancho caben en 800 px, pero 3 fotos no. 
             // entonces la tercera foto pasa a la siguiente fila) 
-
+/*
             while (j < this.imagelist.length) {
                 if (!this.imagelist[j].loaded) {
                     this.message("Image", i, "Not loaded yet");
@@ -155,8 +155,8 @@
                 }
                 j++;
             }
-            
- /*
+  */          
+ 
             while (i < this.imagelist.length) {
                 if (!this.imagelist[i].loaded) {
                     this.message("Image", i, "Not loaded yet");
@@ -169,8 +169,8 @@
                     }
                 }
                 i++;
-            }*/
-            i=Math.max(lastloaded,Math.min(this.maxcolumn*parseInt((timeoutstep/this.timeoutstep)/2),this.imagelist.length));
+            }
+            i=Math.max(i,Math.min(this.maxcolumn*parseInt((timeoutstep/this.timeoutstep)/2),this.imagelist.length));
 
 
             if (i < this.imagelist.length) {
@@ -189,7 +189,7 @@
                 this.setrow(i);
                 this.setcolumns();
             }
-            this.message("split rows finished");
+            this.message("split rows finished",i,this.imagelist.length);
         }
 
         setrow = (maxi) => {
@@ -222,7 +222,9 @@
                 }
 
                 //por cada fila se define el ancho que tendran las fotos para caber en el ancho del contenedor correspondiente 
-                t.setwidth(imagerow);
+                if(imagerow.length>0){
+                    t.setwidth(imagerow);
+                }
             }
             this.message("Set rows finished ", maxi, " images");
             if (maxi < this.imagelist.length) {
@@ -247,17 +249,16 @@
                 combinedWidth += $(this).width();
             });
 
-            console.log("eeeeeeeeeeeee",errorwidth);
-
             let diff = (this.containerwidth - this.margin * 2 * row.length) / combinedWidth;
+            diff*=(1-(errorwidth/row.length));
 
             //si la foto es muy alta y esta sola, se ajusta para que no se desborde
-            if ( ((this.maxcolumn > 1 && row.length == 1 ) || errorwidth>0)  && $(row[0]).height() * 1.33 > $(row[0]).width()) {
+            if ( ((this.maxcolumn > 1 && row.length == 1 ))  && $(row[0]).height() * 1.33 > $(row[0]).width()) {
                 this.message("Image too long, resize", row[0]);
                 $(row[0]).height(this.minheight * 2);
             } else {
                 $.each(row, function() {
-                    $(this).width(diff * $(this).width()).height("auto");
+                    $(this).width( diff * $(this).width()).height("auto");
                 });
             }
 

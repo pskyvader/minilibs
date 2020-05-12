@@ -16,8 +16,8 @@
         <hr class="my-4">
     </div>
     <div class="myclasscontainer container" id="lightgallery">
-        <a href="https://picsum.photos/200/300">
-            <img src="https://picsum.photos/200/300" alt="example 1" />
+        <a href="https://picsum.photos/id/999/200/300">
+            <img src="https://picsum.photos/id/999/200/300" alt="example 1" />
         </a>
     </div>
     <br>
@@ -42,21 +42,32 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/combine/npm/lightgallery,npm/lg-autoplay,npm/lg-fullscreen,npm/lg-hash,npm/lg-pager,npm/lg-share,npm/lg-thumbnail,npm/lg-video,npm/lg-zoom"></script>
     <script src="ImageHeight.js"></script>
+
+    <script>
+        var gallery = "lightgallery";//options: "lightgallery","fancybox"
+        var imagesrul="picsum";//options: "picsum","placeholder"
+
+    </script>
     <script>
         //Add Example images to container
-        var exampleimages = 10;
+        var exampleimages = 100;
         for (i = 0; i < exampleimages; i++) {
-            var width = parseInt(Math.random() * 10 + 3)*100;
-            var height = parseInt(Math.random() * 10 + 3)*100;
-            var tpl = `<a href="https://picsum.photos/${width}/${height}" > <img src="https://picsum.photos/${width}/${height}" alt="example ${i}" /> </a>`;
+            var width = parseInt(Math.random() * 5 + 5)*100;
+            var height = parseInt(Math.random() * 5 + 5)*100;
+            if (imagesrul=="picsum"){
+                //var url=`https://picsum.photos/id/${i+500}/${width}/${height}`;
+                var url=`https://i.picsum.photos/id/${i+100}/${width}/${height}.jpg`;
+            }else if(imagesrul=="placeholder"){
+                var url=`https://via.placeholder.com/${width}x${height}?text=Image+${i}`;
+            }
+
+            var tpl = `<a href="${url}" > <img src="${url}" alt="example ${i}" /> </a>`;
             var img = $(tpl);
             $('.myclasscontainer').append(img);
         }
         //Add Example images to container
     </script>
     <script>
-        var gallery = "lightgallery";
-
         if (gallery == "lightgallery") {
             $('#lightgallery').lightGallery();
         } else if (gallery == "fancybox") {
