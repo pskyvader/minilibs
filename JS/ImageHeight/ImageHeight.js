@@ -18,7 +18,7 @@
         maxcolumn = 1;
         allloaded = false;
 
-        timeoutstep = 300;
+        timeoutstep = 50;
         timeout = null;
 
         constructor(container, params) {
@@ -54,15 +54,12 @@
                 $(this).on('load', function() {
                     img.loaded = true;
                     t.message("Image loaded", img);
-                    //img.img.fadeIn();
-                });
-                $(this).on('error', function() {
+                    img.img.css("margin", 0).css("padding", t.margin).css("background","white");
+                }).on('error', function() {
                     img.loaded = true;
                     img.error = true;
                     t.message("Image load error", img);
-                    if(this.showerrors){
-                        //img.img.fadeIn();
-                    }
+                    img.img.css("margin", 0).css("padding", t.margin).css("background","white");
                 });
             });
 
@@ -156,7 +153,7 @@
                 }
                 j++;
             }
-            if(this.placeholder){
+            if(this.placeholder && firstloaded+1<this.imagelist.length){
                 //muestra al menos todos los cargados consecutivamente, va agregando al menos una fila visible por iteracion
                 i=Math.min(lastloaded+1,(firstloaded+1)*(timeoutstep/this.timeoutstep));
                 i=Math.max(i,this.maxcolumn*parseInt((timeoutstep/this.timeoutstep)+3));
@@ -200,6 +197,7 @@
             $('.split,.loading', this.container).remove();
             let t = this;
             let i = 0;
+            let rowsimage=[];
             while (i < maxi) {
                 let totalwidth = 0;
                 let count = 0;
@@ -225,9 +223,16 @@
 
                 //por cada fila se define el ancho que tendran las fotos para caber en el ancho del contenedor correspondiente 
                 if(imagerow.length>0){
-                    t.setwidth(imagerow);
+                    rowsimage.push(imagerow);
                 }
             }
+            $.each(rowsimage,function(){
+                setTimeout(() => {
+                t.setwidth(this);
+                }, 100);
+            });
+
+
             this.message("Set rows finished ", maxi, " images");
             if (maxi < this.imagelist.length) {
                 this.container.append("<div class='loading'>loading...</div>");
@@ -258,7 +263,7 @@
                 combinedWidth += $(this).width();
             });
 
-            let diff = (this.containerwidth - this.margin * 2 * row.length) / combinedWidth;
+            let diff = (this.container.width() - this.margin * 2 * row.length) / combinedWidth;
             diff*=(1-(errorwidth/row.length));
 
             //si la foto es muy alta y esta sola, se ajusta para que no se desborde
