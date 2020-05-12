@@ -50,13 +50,14 @@
     </script>
     <script>
         //Add Example images to container
-        var exampleimages = 100;
+        var exampleimages = 500;
         for (i = 0; i < exampleimages; i++) {
-            var width = parseInt(Math.random() * 5 + 5)*100;
-            var height = parseInt(Math.random() * 5 + 5)*100;
+            var width = parseInt(Math.random() * 50 + 50)*10;
+            var height = parseInt(Math.random() * 50 + 50)*10;
             if (imagesrul=="picsum"){
                 //var url=`https://picsum.photos/id/${i+500}/${width}/${height}`;
-                var url=`https://i.picsum.photos/id/${i+100}/${width}/${height}.jpg`;
+                var url=`https://picsum.photos/${width}/${height}`;
+                //var url=`https://i.picsum.photos/id/${i+100}/${width}/${height}.jpg`;
             }else if(imagesrul=="placeholder"){
                 var url=`https://via.placeholder.com/${width}x${height}?text=Image+${i}`;
             }
@@ -83,7 +84,7 @@
             minheight: 100,
             maxrow: 5,
             margin: 10,
-            showerrors: true // If you want to see broken images And console logs
+            showerrors: false // If you want to see broken images And console logs
         });
     </script>
 </body>
