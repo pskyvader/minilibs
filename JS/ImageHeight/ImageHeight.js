@@ -223,14 +223,16 @@
 
                 //por cada fila se define el ancho que tendran las fotos para caber en el ancho del contenedor correspondiente 
                 if(imagerow.length>0){
-                    rowsimage.push(imagerow);
+                    //rowsimage.push(imagerow);
+                    t.setwidth(imagerow);
                 }
             }
+            /*
             $.each(rowsimage,function(){
                 setTimeout(() => {
                 t.setwidth(this);
-                }, 100);
-            });
+                }, 500);
+            });*/
 
 
             this.message("Set rows finished ", maxi, " images");
@@ -284,7 +286,7 @@
             while (lastItem.parent()[0] != this.container[0]) {
                 lastItem = lastItem.parent();
             }
-            $('<br class="split"/>').insertAfter(lastItem);
+            $('<br class="split"/>asdf').insertAfter(lastItem);
         }
     }
 
