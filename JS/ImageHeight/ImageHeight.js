@@ -39,7 +39,7 @@
 
             //reset de estilos para evitar errores de calculo
             $("a", t.container).css("font-size", 0).css("padding", 0).css("margin", 0);
-            $("img", t.container).css("max-width", "100%").css("padding", t.margin).hide().width("auto").height(this.minheight);
+            $("img", t.container).css("max-width", "100%").css("padding", t.margin).hide();
 
             //agregar imagenes a la lista total de imagenes 
             $("img", t.container).each(function() {
@@ -52,11 +52,15 @@
                 $(this).on('load', function() {
                     img.loaded = true;
                     t.message("Image loaded", img);
+                    img.img.fadeIn();
                 });
                 $(this).on('error', function() {
                     img.loaded = true;
                     img.error = true;
                     t.message("Image load error", img);
+                    if(this.showerrors){
+                        img.img.fadeIn();
+                    }
                 });
             });
 
@@ -200,7 +204,7 @@
                 let imagerow = [];
 
                 //separa la lista de imagenes en fila
-                while (totalwidth <= t.containerwidth && count < this.maxcolumn && i < maxi) {
+                while (totalwidth <= t.containerwidth && (!this.allloaded || count < this.maxcolumn) && i < maxi) {
                     $(t.imagelist[i].img).width("auto").height(this.minheight);
                     let currentwidth = $(t.imagelist[i].img).width();
                     if (currentwidth < t.minwidth) currentwidth = t.minwidth;
@@ -235,14 +239,20 @@
             this.message("Set width ", row.length, " images in this row");
             //calculo del ancho optimo
             let combinedWidth = 0;
+            let errorwidth=0;
             $.each(row, function() {
+                if($(this).width()==0){
+                    errorwidth++;
+                }
                 combinedWidth += $(this).width();
             });
+
+            console.log("eeeeeeeeeeeee",errorwidth);
 
             let diff = (this.containerwidth - this.margin * 2 * row.length) / combinedWidth;
 
             //si la foto es muy alta y esta sola, se ajusta para que no se desborde
-            if (this.maxcolumn > 1 && row.length == 1 && $(row[0]).height() * 1.33 > $(row[0]).width()) {
+            if ( ((this.maxcolumn > 1 && row.length == 1 ) || errorwidth>0)  && $(row[0]).height() * 1.33 > $(row[0]).width()) {
                 this.message("Image too long, resize", row[0]);
                 $(row[0]).height(this.minheight * 2);
             } else {
