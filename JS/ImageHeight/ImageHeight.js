@@ -21,6 +21,8 @@
         timeoutstep = 50;
         timeout = null;
 
+        time = Date.now();
+
         constructor(container, params) {
             this.container = container;
             if (this.container.length != 1) {
@@ -40,27 +42,45 @@
 
 
             //reset de estilos para evitar errores de calculo
-            $("a", t.container).css("font-size", 0).css("padding", 0).css("margin", 0);
-            $("img", t.container).css("max-width", "100%").css("margin", t.margin).css("background","#cccccc").hide().height(this.minheight);
+            $("a", t.container).css({
+                "padding": 0,
+                "font-size": 0,
+                "margin": 0
+            });
+            //estilo basico de imagen para calcular correctamente
+            $("img", t.container).css({
+                "max-width": "100%",
+                "margin": t.margin,
+                "background": "#cccccc",
+                "height": this.minheight
+            }).hide();
 
             //agregar imagenes a la lista total de imagenes 
             $("img", t.container).each(function() {
                 let img = {
                     "img": $(this),
                     "loaded": false,
-                    "error": false
+                    "error": false,
+                    "width": 0
                 };
                 t.imagelist.push(img);
-                $(this).on('load', function() {
+                $(this).on('load error', function() {
                     img.loaded = true;
+                    img.img.css({
+                        "margin": 0,
+                        "padding": t.margin,
+                        "background": "#fff"
+                    });
+                }).on('load', function() {
                     t.message("Image loaded", img);
-                    img.img.css("margin", 0).css("padding", t.margin).css("background","white");
                 }).on('error', function() {
-                    img.loaded = true;
                     img.error = true;
                     t.message("Image load error", img);
-                    img.img.css("margin", 0).css("padding", t.margin).css("background","white");
                 });
+                if (this.complete) {
+                    $(this).trigger('load');
+                }
+
             });
 
             t.message("Image list", t.imagelist);
@@ -72,13 +92,17 @@
             $(document).ready(function() {
                 t.message("Start Process...");
                 t.setcolumns();
+                $(window).on("resize", function() {
+                    t.time = Date.now();
+                });
                 $(window).on("load resize", t.setcolumns);
             });
         }
 
         message = (...msg) => {
             if (this.showerrors) {
-                console.log(...msg);
+                let time = Date.now();
+                console.log((time - this.time) + " ms:", ...msg);
             }
         }
 
@@ -108,9 +132,11 @@
             if (this.allloaded) {
                 //control para evitar recalcular innecesariamente 
                 if (this.containerwidth == this.last_containerwidth && this.maxcolumn == this.last_column) {
+                    this.message("Skip, same previous position");
                     return;
                 }
                 if (this.maxcolumn == 1) {
+                    this.message("1 column, autosize");
                     if (this.last_column != this.maxcolumn) {
                         $("img", this.container).height("auto").css("width", "100%");
                     }
@@ -134,9 +160,8 @@
 
             let i = 0;
             let j = 0;
-            let firstloaded=0;
-            let lastloaded=0;
-            let noloaded=0;
+            let firstloaded = 0;
+            let noloaded = 0;
             // crear filas de imagenes que entren en el ancho maximo 
             //(ej: 2 fotos de 300 de ancho caben en 800 px, pero 3 fotos no. 
             // entonces la tercera foto pasa a la siguiente fila) 
@@ -146,34 +171,33 @@
                     this.message("Image", j, "Not loaded yet");
                     noloaded++;
                 } else {
-                    if(noloaded==0){
-                        firstloaded=j;
+                    if (noloaded == 0) {
+                        firstloaded = j;
                     }
-                    lastloaded=j;
                 }
                 j++;
             }
-            if(this.placeholder && firstloaded+1<this.imagelist.length){
+            if (this.placeholder && firstloaded + 1 < this.imagelist.length) {
                 //muestra al menos todos los cargados consecutivamente, va agregando al menos una fila visible por iteracion
-                i=Math.min(lastloaded+1,(firstloaded+1)*(timeoutstep/this.timeoutstep));
-                i=Math.max(i,this.maxcolumn*parseInt((timeoutstep/this.timeoutstep)+3));
-                i=Math.min(i,this.imagelist.length);
-            }else{
-                i=firstloaded+1;
+                i = firstloaded + parseInt(timeoutstep / this.timeoutstep) * this.maxcolumn;
+                i = Math.min(i, this.imagelist.length);
+            } else {
+                i = firstloaded + 1;
             }
 
-            j=0;
-            while (j<i) {
-                //muestra las fotos cargadas hasta este punto
-                if (this.placeholder || this.imagelist[j].loaded && (this.showerrors || !this.imagelist[j].error)) {
+            j = 0;
+            while (j < i) {
+                //muestra las fotos hasta este punto, si esta activado placeholder, show errors o la imagen esta cargada sin errores
+                if (this.placeholder || this.showerrors || this.imagelist[j].loaded && !this.imagelist[j].error) {
                     this.message("Show image", j);
-                    this.imagelist[j].img.fadeIn();
+                    this.imagelist[j].img.fadeIn("slow");
                 }
                 j++;
             }
 
-            if (i < this.imagelist.length || noloaded>0) {
+            if (i < this.imagelist.length || noloaded > 0) {
                 this.message("Image max calculate", i);
+                //solo vuelve a cargar si hay mas filas disponibles
                 if (i > this.lasti) {
                     this.lasti = i;
                     this.setrow(i);
@@ -188,7 +212,7 @@
                 this.setrow(i);
                 this.setcolumns();
             }
-            this.message("split rows finished",i,this.imagelist.length);
+            this.message("split rows finished", i, this.imagelist.length);
         }
 
         setrow = (maxi) => {
@@ -197,7 +221,6 @@
             $('.split,.loading', this.container).remove();
             let t = this;
             let i = 0;
-            let rowsimage=[];
             while (i < maxi) {
                 let totalwidth = 0;
                 let count = 0;
@@ -205,8 +228,12 @@
 
                 //separa la lista de imagenes en fila
                 while (totalwidth <= t.containerwidth && (!this.allloaded || count < this.maxcolumn) && i < maxi) {
-                    $(t.imagelist[i].img).width("auto").height(this.minheight);
-                    let currentwidth = $(t.imagelist[i].img).width();
+                    if (t.imagelist[i].width == 0) {
+                        $(t.imagelist[i].img).width("auto").height(this.minheight);
+                        t.imagelist[i].width = $(t.imagelist[i].img).width();
+                    }
+                    let currentwidth = t.imagelist[i].width;
+
                     if (currentwidth < t.minwidth) currentwidth = t.minwidth;
                     if (t.imagelist[i].error && !t.showerrors) {
                         i++;
@@ -215,25 +242,17 @@
                     //ajusto al ancho minimo para evitar que las fotos se vean demasiado pequeñas 
                     totalwidth += currentwidth;
                     if (totalwidth <= t.containerwidth || imagerow.length == 0) {
-                        imagerow.push(t.imagelist[i].img);
+                        imagerow.push(t.imagelist[i]);
                         i++;
                     }
                     count++;
                 }
 
                 //por cada fila se define el ancho que tendran las fotos para caber en el ancho del contenedor correspondiente 
-                if(imagerow.length>0){
-                    //rowsimage.push(imagerow);
+                if (imagerow.length > 0) {
                     t.setwidth(imagerow);
                 }
             }
-            /*
-            $.each(rowsimage,function(){
-                setTimeout(() => {
-                t.setwidth(this);
-                }, 500);
-            });*/
-
 
             this.message("Set rows finished ", maxi, " images");
             if (maxi < this.imagelist.length) {
@@ -247,42 +266,42 @@
 
 
         setwidth = (row) => {
+            let minheight=this.minheight;
             this.message("Set width ", row.length, " images in this row");
             //calculo del ancho optimo
             let combinedWidth = 0;
-            let errorwidth=0;
-            let last_width=0;
-            let last_height=0;
+            let errorwidth = 0;
+            let last_width = 0;
             $.each(row, function() {
-                if($(this).width()==0){
+                if (this.width == 0) {
                     errorwidth++;
-                }else{
-                    if(last_width==0 || last_width>$(this).width()){
-                        last_width=$(this).width();
-                        last_height=$(this).height();
+                } else {
+                    if (last_width == 0 || last_width > this.width) {
+                        last_width = this.width;
                     }
                 }
-                combinedWidth += $(this).width();
+                combinedWidth += this.width;
             });
 
-            let diff = (this.container.width() - this.margin * 2 * row.length) / combinedWidth;
-            diff*=(1-(errorwidth/row.length));
+            let diff = (this.containerwidth - this.margin * 2 * row.length) / combinedWidth;
+            diff *= (1 - (errorwidth / row.length));
 
             //si la foto es muy alta y esta sola, se ajusta para que no se desborde
-            if ( ((this.maxcolumn > 1 && row.length == 1 ))  && $(row[0]).height() * 1.33 > $(row[0]).width()) {
+            if (this.maxcolumn > 1 && row.length == 1 && minheight * 1.33 > row[0].width && row[0].width!=0) {
                 this.message("Image too long, resize", row[0]);
-                $(row[0]).height(this.minheight * 2);
+                $(row[0].img).width("auto").height(minheight * 2);
             } else {
                 $.each(row, function() {
-                    $(this).width( diff * $(this).width()).height("auto");
-                    if($(this).width()==0){
-                        $(this).width(diff * last_width).height(diff * last_height);
+                    if (this.width == 0) {
+                        $(this.img).width(diff * last_width).height(diff * minheight);
+                    } else {
+                        $(this.img).width(diff * this.width).height("auto");
                     }
                 });
             }
 
             //insertar salto de linea para evitar errores en caso de que una imagen falle en cargar
-            var lastItem = row.pop();
+            var lastItem = row.pop().img;
             while (lastItem.parent()[0] != this.container[0]) {
                 lastItem = lastItem.parent();
             }
