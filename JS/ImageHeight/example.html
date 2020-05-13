@@ -52,8 +52,8 @@
         //Add Example images to container
         var exampleimages = 10; // try with 1000 ! 
         for (i = 0; i < exampleimages; i++) {
-            var width = parseInt(Math.random() * 100 + 30)*10;
-            var height = parseInt(Math.random() * 100 + 30)*10;
+            var width = parseInt(Math.random() * 10 + 3)*100;
+            var height = parseInt(Math.random() * 10 + 3)*100;
             if (imagesrul=="picsum"){
                 var url=`https://picsum.photos/${width}/${height}`;
             }else if(imagesrul=="placeholder"){
