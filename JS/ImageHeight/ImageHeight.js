@@ -195,6 +195,7 @@
                 j++;
             }
 
+
             if (i < this.imagelist.length || noloaded > 0) {
                 this.message("Image max calculate", i);
                 //solo vuelve a cargar si hay mas filas disponibles
@@ -221,36 +222,43 @@
             $('.split,.loading', this.container).remove();
             let t = this;
             let i = 0;
-            while (i < maxi) {
-                let totalwidth = 0;
-                let count = 0;
-                let imagerow = [];
 
-                //separa la lista de imagenes en fila
-                while (totalwidth <= t.containerwidth && (!this.allloaded || count < this.maxcolumn) && i < maxi) {
-                    if (t.imagelist[i].width == 0) {
-                        $(t.imagelist[i].img).width("auto").height(this.minheight);
-                        t.imagelist[i].width = $(t.imagelist[i].img).width();
-                    }
-                    let currentwidth = t.imagelist[i].width;
+            if (this.maxcolumn == 1) {
+                this.message("1 column, autosize");
+                $("img", this.container).height("auto").css("width", "100%");
+                return;
+            } else {
+                while (i < maxi) {
+                    let totalwidth = 0;
+                    let count = 0;
+                    let imagerow = [];
 
-                    if (currentwidth < t.minwidth) currentwidth = t.minwidth;
-                    if (t.imagelist[i].error && !t.showerrors) {
-                        i++;
-                        continue;
-                    }
-                    //ajusto al ancho minimo para evitar que las fotos se vean demasiado pequeñas 
-                    totalwidth += currentwidth;
-                    if (totalwidth <= t.containerwidth || imagerow.length == 0) {
-                        imagerow.push(t.imagelist[i]);
-                        i++;
-                    }
-                    count++;
-                }
+                    //separa la lista de imagenes en fila
+                    while (totalwidth <= t.containerwidth && (!this.allloaded || count < this.maxcolumn) && i < maxi) {
+                        if (t.imagelist[i].width == 0) {
+                            $(t.imagelist[i].img).width("auto").height(this.minheight);
+                            t.imagelist[i].width = $(t.imagelist[i].img).width();
+                        }
+                        let currentwidth = t.imagelist[i].width;
 
-                //por cada fila se define el ancho que tendran las fotos para caber en el ancho del contenedor correspondiente 
-                if (imagerow.length > 0) {
-                    t.setwidth(imagerow);
+                        if (currentwidth < t.minwidth) currentwidth = t.minwidth;
+                        if (t.imagelist[i].error && !t.showerrors) {
+                            i++;
+                            continue;
+                        }
+                        //ajusto al ancho minimo para evitar que las fotos se vean demasiado pequeñas 
+                        totalwidth += currentwidth;
+                        if (totalwidth <= t.containerwidth || imagerow.length == 0) {
+                            imagerow.push(t.imagelist[i]);
+                            i++;
+                        }
+                        count++;
+                    }
+
+                    //por cada fila se define el ancho que tendran las fotos para caber en el ancho del contenedor correspondiente 
+                    if (imagerow.length > 0) {
+                        t.setwidth(imagerow);
+                    }
                 }
             }
 
@@ -266,7 +274,7 @@
 
 
         setwidth = (row) => {
-            let minheight=this.minheight;
+            let minheight = this.minheight;
             this.message("Set width ", row.length, " images in this row");
             //calculo del ancho optimo
             let combinedWidth = 0;
@@ -287,7 +295,7 @@
             diff *= (1 - (errorwidth / row.length));
 
             //si la foto es muy alta y esta sola, se ajusta para que no se desborde
-            if (this.maxcolumn > 1 && row.length == 1 && minheight * 1.33 > row[0].width && row[0].width!=0) {
+            if (this.maxcolumn > 1 && row.length == 1 && minheight * 1.33 > row[0].width && row[0].width != 0) {
                 this.message("Image too long, resize", row[0]);
                 $(row[0].img).width("auto").height(minheight * 2);
             } else {
