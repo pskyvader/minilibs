@@ -310,7 +310,6 @@
     }
 
     $.fn.ImageHeight = function(options) {
-        // This is the easiest way to have default options.
         var settings = $.extend({
             minwidth: ImageHeight.minwidth,
             minheight: ImageHeight.minheight,
