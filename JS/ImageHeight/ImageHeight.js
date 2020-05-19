@@ -277,6 +277,7 @@
 
         setwidth(row) {
             let t=this;
+            let errorcalc=0.01; // para controlar la diferencia con firefox
             t.message("Set width ", row.length, " images in this row",row);
             //calculo del ancho optimo
             let combinedWidth = 0;
@@ -294,7 +295,8 @@
             });
 
             let diff = (t.containerwidth - t.margin * 2 * row.length) / combinedWidth;
-            diff *= (1 - (errorwidth / row.length));
+            diff *= (1 - (errorwidth / row.length)); //por si existen fotos aun no cargadas
+            
             
             t.message("Proportion", diff, " missing images",errorwidth);
 
@@ -305,9 +307,9 @@
             } else {
                 $.each(row, function() {
                     if (this.width == 0) {
-                        $(this.img).width(diff * last_width).height(diff * t.minheight);
+                        $(this.img).width( diff * last_width-errorcalc ).height(diff * t.minheight-errorcalc);
                     } else {
-                        $(this.img).width(diff * this.width).height("auto");
+                        $(this.img).width(diff * this.width-errorcalc).height("auto");
                     }
                 });
             }
