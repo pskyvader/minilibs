@@ -1,5 +1,9 @@
 ## Image Height
 Library for masonry style image gallery, with same height by row. Requires [JQuery](https://code.jquery.com/).
+
+## Try the example
+You can try the example [Here](https://pskyvader.github.io/minilibs/JS/ImageHeight/)
+
 ### How to use 
 Download the file "ImageHeight.min.js" and add it to your html:
 ```html
@@ -34,7 +38,7 @@ $('.myclasscontainer').ImageHeight({
 });
 ```
 
-**You can also try the example file. Just Download both files in the same folder**
+**You can also Download the example file. Just put both files in the same folder**
 
 
 
