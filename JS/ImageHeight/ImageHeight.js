@@ -319,7 +319,7 @@
             while (lastItem.parent()[0] != t.container[0]) {
                 lastItem = lastItem.parent();
             }
-            $('<br class="split"/>asdf').insertAfter(lastItem);
+            $('<br class="split"/>').insertAfter(lastItem);
         }
     }
 
