@@ -1,7 +1,7 @@
 (function($) {
     class ImageHeight {
         constructor(container, params) {
-            let t=this;
+            let t = this;
             t.container = container;
             if (t.container.length != 1) {
                 throw new Error('Container object "' + container + '" not valid');
@@ -60,7 +60,7 @@
                 t.imagelist.push(img);
                 $(this).on('load error', function() {
                     img.loaded = true;
-                    img.width=0;
+                    img.width = 0;
                     img.img.css({
                         "margin": 0,
                         "padding": t.margin,
@@ -98,7 +98,7 @@
         }
 
         message(...msg) {
-            let t=this;
+            let t = this;
             if (t.showerrors) {
                 let time = Date.now();
                 console.log((time - t.time) + " ms:", ...msg);
@@ -108,7 +108,7 @@
 
 
         setcolumns() {
-            let t=this;
+            let t = this;
             t.message("Set Columns");
             if (!t.allloaded) {
                 t.container.height(1000000000);
@@ -133,7 +133,7 @@
             if (t.allloaded) {
                 //control para evitar recalcular innecesariamente 
                 if (t.containerwidth == t.last_containerwidth && t.maxcolumn == t.last_column) {
-                    t.message("Skip, same previous position",t.imagelist);
+                    t.message("Skip, same previous position", t.imagelist);
                     return;
                 }
                 if (t.maxcolumn == 1) {
@@ -152,8 +152,8 @@
             t.splitrows();
         }
 
-        splitrows(timeoutstep = 0){
-            let t=this;
+        splitrows(timeoutstep = 0) {
+            let t = this;
             t.message("Split rows check", "timeout:", timeoutstep);
             if (t.allloaded) {
                 t.setrow(t.imagelist.length);
@@ -215,11 +215,11 @@
                 t.setrow(i);
                 t.setcolumns();
             }
-            t.message("split rows finished","position ", i,"total ", t.imagelist.length);
+            t.message("split rows finished", "position ", i, "total ", t.imagelist.length);
         }
 
         setrow(maxi) {
-            let t=this;
+            let t = this;
             t.message("Set rows");
             //alto del contenedor muy largo para controlar la barra de desplazamiento 
             $('.split,.loading', t.container).remove();
@@ -236,7 +236,8 @@
                     let imagerow = [];
 
                     //separa la lista de imagenes en fila
-                    while (totalwidth <= t.containerwidth && (!t.allloaded || count < t.maxcolumn) && i < maxi) {
+                    //while (totalwidth <= t.containerwidth && (!t.allloaded || count < t.maxcolumn) && i < maxi) {
+                    while (totalwidth <= t.containerwidth && (count < t.maxcolumn) && i < maxi) {
                         if (t.imagelist[i].width == 0) {
                             $(t.imagelist[i].img).width("auto").height(t.minheight);
                             t.imagelist[i].width = $(t.imagelist[i].img).width();
@@ -276,9 +277,9 @@
 
 
         setwidth(row) {
-            let t=this;
-            let errorcalc=0.01; // para controlar la diferencia con firefox
-            t.message("Set width ", row.length, " images in this row",row);
+            let t = this;
+            let errorcalc = 0.01; // para controlar la diferencia con firefox
+            t.message("Set width ", row.length, " images in this row", row);
             //calculo del ancho optimo
             let combinedWidth = 0;
             let errorwidth = 0;
@@ -296,9 +297,9 @@
 
             let diff = (t.containerwidth - t.margin * 2 * row.length) / combinedWidth;
             diff *= (1 - (errorwidth / row.length)); //por si existen fotos aun no cargadas
-            
-            
-            t.message("Proportion", diff, " missing images",errorwidth);
+
+
+            t.message("Proportion", diff, " missing images", errorwidth);
 
             //si la foto es muy alta y esta sola, se ajusta para que no se desborde
             if (t.maxcolumn > 1 && row.length == 1 && t.minheight * 1.33 > row[0].width && row[0].width != 0) {
@@ -307,9 +308,9 @@
             } else {
                 $.each(row, function() {
                     if (this.width == 0) {
-                        $(this.img).width( diff * last_width-errorcalc ).height(diff * t.minheight-errorcalc);
+                        $(this.img).width(diff * last_width - errorcalc).height(diff * t.minheight - errorcalc);
                     } else {
-                        $(this.img).width(diff * this.width-errorcalc).height("auto");
+                        $(this.img).width(diff * this.width - errorcalc).height("auto");
                     }
                 });
             }
