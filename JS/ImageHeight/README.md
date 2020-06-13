@@ -1,5 +1,5 @@
 ## Image Height
-Library for masonry style image gallery, with same height by row. Requires [JQuery](https://code.jquery.com/).
+Responsive Masonry style image plugin, with equal height by row. Requires [JQuery](https://code.jquery.com/).
 
 ## Try the example
 You can try the example [Here](https://pskyvader.github.io/minilibs/JS/ImageHeight/)
