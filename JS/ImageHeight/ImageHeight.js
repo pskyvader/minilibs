@@ -64,9 +64,10 @@
                 if (!t.lazyload) {
                     t.setloaded(img);
                 } else {
-                    //$(this).show();
+                    $(this).show();
                     $(this).css({
-                        "width": "100%"
+                        "width": "100%",
+                        "height": t.minheight*10
                     });
                 }
 
@@ -246,6 +247,9 @@
             }
             if (t.lazyload) {
                 i = lastloaded+t.maxcolumn;
+                if(i > t.imagelist.length ){
+                    i=t.imagelist.length;
+                }
             } else if (t.placeholder && firstloaded + 1 < t.imagelist.length) {
                 //muestra al menos todos los cargados consecutivamente, va agregando al menos una fila visible por iteracion
                 //a menos que lazyload este activado
