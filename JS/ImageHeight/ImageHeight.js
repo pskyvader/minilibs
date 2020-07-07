@@ -61,17 +61,7 @@
                 };
                 t.imagelist.push(img);
                 if (!t.lazyload) {
-                    $(this).on('load', function() {
-                        t.message("Image loaded", img);
-                        t.loadimage(img);
-                    }).on('error', function() {
-                        img.error = true;
-                        t.loadimage(img);
-                        t.message("Image load error", img);
-                    });
-                    if (this.complete) {
-                        $(this).trigger('load');
-                    }
+                    t.setloaded(img);
                 } else {
                     $(this).show();
                 }
@@ -115,12 +105,13 @@
                                 if (src) {
                                     img.prop("src", src);
                                     img.data("src", "");
+                                }
 
-                                    const found = t.imagelist.find(element => {
-                                        console.log(element,element.img,img);
-                                        return element.img==img;
-                                    });
-                                    console.log(found);
+                                const found = t.imagelist.find(function(element) {
+                                    return element.img[0] == img[0];
+                                });
+                                if (found != undefined) {
+                                    t.setloaded(found);
                                 }
                             }
                         }
@@ -131,6 +122,20 @@
                     t.observer.observe(img.img[0]);
                 });
 
+            }
+        }
+        setloaded(img) {
+            let t = this;
+            $(img.img).on('load', function() {
+                t.message("Image loaded", img);
+                t.loadimage(img);
+            }).on('error', function() {
+                img.error = true;
+                t.loadimage(img);
+                t.message("Image load error", img);
+            });
+            if ($(img.img).complete) {
+                $(img.img).trigger('load');
             }
         }
 
