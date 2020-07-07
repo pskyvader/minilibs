@@ -65,7 +65,7 @@
                 var url=`https://via.placeholder.com/${width}x${height}?text=Image+${i}`;
             }
 
-            var tpl = `<a href="${url}" > <img src="${url}" alt="example ${i}" /> </a>`;
+            var tpl = `<a href="${url}" > <img src="" data-src="${url}" alt="example ${i}" /> </a>`;
             var img = $(tpl);
             $('.myclasscontainer').append(img);
         }

@@ -12,6 +12,7 @@
             t.minheight = params.minheight;
             t.maxrow = params.maxrow;
             t.margin = params.margin;
+            t.lazyload = params.lazyload;
             t.placeholder = params.placeholder;
             t.showerrors = params.showerrors;
 
@@ -330,6 +331,7 @@
             minheight: 100,
             maxrow: 5,
             margin: 10,
+            lazyload:true, //experimental, use with caution
             placeholder: false, // True If you want to see placeholders for images to be loaded, or False to wait until a line is completely loaded to show it
             showerrors: false // If you want to see broken images And console logs (images visibility overrided by placeholder)
         }, options);
