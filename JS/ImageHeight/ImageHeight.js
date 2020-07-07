@@ -60,12 +60,12 @@
                 };
                 t.imagelist.push(img);
                 $(this).on('load', function() {
-                    if (!t.lazyload || img.img.src != undefined) {
+                    if (!t.lazyload || img.img.data("src")== undefined) {
                         t.message("Image loaded", img);
                         t.loadimage(img);
                     }
                 }).on('error', function() {
-                    if (!t.lazyload || img.img.src != undefined) {
+                    if (!t.lazyload || img.img.data("src")== undefined) {
                         img.error = true;
                         t.loadimage(img);
                         t.message("Image load error", img);
