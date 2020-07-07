@@ -51,7 +51,7 @@
                 "background": "#cccccc"
             });
             if (t.lazyload) {
-                $(this).css({
+                $("img", t.container).css({
                     "width": "100%",
                     "height": t.minheight * 10
                 });
@@ -76,7 +76,7 @@
                     t.setloaded(img);
                 }else{
                     if($(this).data("src")!=undefined){
-                        //$(this).prop("src","data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
+                        $(this).prop("src","data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
                     }
                 }
 
@@ -105,7 +105,7 @@
             if (t.lazyload) {
                 const observerConfig = {
                     root: null,
-                    rootMargin: "0px",
+                    rootMargin: "1000px",
                     threshold: 0
                 }
 
