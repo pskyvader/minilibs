@@ -53,7 +53,7 @@
             if (t.lazyload) {
                 $("img", t.container).css({
                     "width": "100%",
-                    "height": t.minheight * 10
+                    "height": t.minheight
                 })
                 if(!t.placeholder){
                     $("img", t.container).hide();
@@ -108,7 +108,7 @@
             if (t.lazyload) {
                 const observerConfig = {
                     root: null,
-                    rootMargin: 100*t.minheight+"px",
+                    rootMargin: 50*t.minheight+"px",
                     threshold: 0
                 }
 
