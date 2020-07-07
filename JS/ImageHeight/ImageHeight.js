@@ -60,8 +60,10 @@
                 };
                 t.imagelist.push(img);
                 $(this).on('load', function() {
-                    t.message("Image loaded", img);
-                    t.loadimage(img);
+                    if (!t.lazyload || img.src != undefined) {
+                        t.message("Image loaded", img);
+                        t.loadimage(img);
+                    }
                 }).on('error', function() {
                     if (!t.lazyload || img.src != undefined) {
                         img.error = true;
@@ -109,9 +111,8 @@
                             if ("img" == entry.target.tagName.toLowerCase()) {
                                 if (src) {
                                     entry.target.src = src;
-                                    $(entry.target).on("load",function(){
-                                        console.log("asdasdasd",this);
-                                    });
+                                    console.log("adasd");
+                                    $(entry.target).trigger("load");
                                 }
                             }
                         }
@@ -126,7 +127,7 @@
         }
 
         loadimage(img) {
-            let t=this;
+            let t = this;
             img.loaded = true;
             img.width = 0;
             img.img.css({
@@ -224,7 +225,7 @@
                 }
                 j++;
             }
-            if (!t.lazyload && t.placeholder && firstloaded + 1 < t.imagelist.length) {
+            if (t.lazyload || t.placeholder && firstloaded + 1 < t.imagelist.length) {
                 //muestra al menos todos los cargados consecutivamente, va agregando al menos una fila visible por iteracion
                 //a menos que lazyload este activado
                 i = firstloaded + parseInt(timeoutstep / t.timeoutstep) * t.maxcolumn;
