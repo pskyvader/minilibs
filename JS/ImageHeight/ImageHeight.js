@@ -63,7 +63,11 @@
                 if (!t.lazyload) {
                     t.setloaded(img);
                 } else {
-                    $(this).show();
+                    //$(this).show();
+                    $(this).css({
+                        "width": "100%",
+                        "height": t.minheight*10
+                    });
                 }
 
 
@@ -222,6 +226,7 @@
             let i = 0;
             let j = 0;
             let firstloaded = 0;
+            let lastloaded=0;
             let noloaded = 0;
             // crear filas de imagenes que entren en el ancho maximo 
             //(ej: 2 fotos de 300 de ancho caben en 800 px, pero 3 fotos no. 
@@ -235,6 +240,7 @@
                     if (noloaded == 0) {
                         firstloaded = j;
                     }
+                    lastloaded=j;
                 }
                 j++;
             }
@@ -243,8 +249,10 @@
                 //a menos que lazyload este activado
                 i = firstloaded + parseInt(timeoutstep / t.timeoutstep) * t.maxcolumn;
                 i = Math.min(i, t.imagelist.length);
-            } else {
+            } else if(!t.lazyload) {
                 i = firstloaded + 1;
+            }else{
+                i=lastloaded;
             }
 
             j = 0;
