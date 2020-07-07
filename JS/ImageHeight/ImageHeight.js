@@ -23,7 +23,7 @@
             t.last_column = 0;
             t.containerwidth = null;
             t.lasti = 0;
-            t.lastnoloaded=0;
+            t.lastnoloaded = 0;
             t.maxcolumn = 1;
             t.allloaded = false;
 
@@ -44,12 +44,23 @@
                 "margin": 0
             });
             //estilo basico de imagen para calcular correctamente
+
             $("img", t.container).css({
                 "max-width": "100%",
                 "margin": t.margin,
-                "background": "#cccccc",
-                "height": t.minheight
-            }).hide();
+                "background": "#cccccc"
+            });
+            if (t.lazyload) {
+                $(this).css({
+                    "width": "100%",
+                    "height": t.minheight * 10
+                });
+
+            } else {
+                $("img", t.container).css({
+                    "height": t.minheight
+                }).hide();
+            }
 
 
             //agregar imagenes a la lista total de imagenes 
@@ -63,12 +74,10 @@
                 t.imagelist.push(img);
                 if (!t.lazyload) {
                     t.setloaded(img);
-                } else {
-                    $(this).show();
-                    $(this).css({
-                        "width": "100%",
-                        "height": t.minheight*10
-                    });
+                }else{
+                    if($(this).data("src")!=undefined){
+                        //$(this).prop("src","data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
+                    }
                 }
 
 
@@ -246,9 +255,9 @@
                 j++;
             }
             if (t.lazyload) {
-                i = lastloaded+t.maxcolumn;
-                if(i > t.imagelist.length ){
-                    i=t.imagelist.length;
+                i = lastloaded + t.maxcolumn;
+                if (i > t.imagelist.length) {
+                    i = t.imagelist.length;
                 }
             } else if (t.placeholder && firstloaded + 1 < t.imagelist.length) {
                 //muestra al menos todos los cargados consecutivamente, va agregando al menos una fila visible por iteracion
@@ -273,9 +282,9 @@
             if (i < t.imagelist.length || noloaded > 0) {
                 t.message("Image max calculate", i);
                 //solo vuelve a cargar si hay mas filas disponibles
-                if (i > t.lasti || noloaded<t.lastnoloaded) {
+                if (i > t.lasti || noloaded < t.lastnoloaded) {
                     t.lasti = i;
-                    t.lastnoloaded=noloaded;
+                    t.lastnoloaded = noloaded;
                     t.setrow(i);
                 }
                 if (t.timeout != null) {
