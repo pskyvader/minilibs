@@ -23,6 +23,7 @@
             t.last_column = 0;
             t.containerwidth = null;
             t.lasti = 0;
+            t.lastnoloaded=0;
             t.maxcolumn = 1;
             t.allloaded = false;
 
@@ -65,8 +66,7 @@
                 } else {
                     //$(this).show();
                     $(this).css({
-                        "width": "100%",
-                        "height": t.minheight*10
+                        "width": "100%"
                     });
                 }
 
@@ -226,7 +226,7 @@
             let i = 0;
             let j = 0;
             let firstloaded = 0;
-            let lastloaded=0;
+            let lastloaded = 0;
             let noloaded = 0;
             // crear filas de imagenes que entren en el ancho maximo 
             //(ej: 2 fotos de 300 de ancho caben en 800 px, pero 3 fotos no. 
@@ -240,25 +240,25 @@
                     if (noloaded == 0) {
                         firstloaded = j;
                     }
-                    lastloaded=j;
+                    lastloaded = j;
                 }
                 j++;
             }
-            if (t.placeholder && firstloaded + 1 < t.imagelist.length) {
+            if (t.lazyload) {
+                i = lastloaded+t.maxcolumn;
+            } else if (t.placeholder && firstloaded + 1 < t.imagelist.length) {
                 //muestra al menos todos los cargados consecutivamente, va agregando al menos una fila visible por iteracion
                 //a menos que lazyload este activado
                 i = firstloaded + parseInt(timeoutstep / t.timeoutstep) * t.maxcolumn;
                 i = Math.min(i, t.imagelist.length);
-            } else if(!t.lazyload) {
+            } else if (!t.lazyload) {
                 i = firstloaded + 1;
-            }else{
-                i=lastloaded;
             }
 
             j = 0;
             while (j < i) {
                 //muestra las fotos hasta este punto, si esta activado placeholder, show errors o la imagen esta cargada sin errores
-                if (t.placeholder || t.showerrors || t.imagelist[j].loaded && !t.imagelist[j].error) {
+                if (t.lazyload || t.placeholder || t.showerrors || t.imagelist[j].loaded && !t.imagelist[j].error) {
                     t.message("Show image", j);
                     t.imagelist[j].img.fadeIn("slow");
                 }
@@ -269,8 +269,9 @@
             if (i < t.imagelist.length || noloaded > 0) {
                 t.message("Image max calculate", i);
                 //solo vuelve a cargar si hay mas filas disponibles
-                if (i > t.lasti) {
+                if (i > t.lasti || noloaded<t.lastnoloaded) {
                     t.lasti = i;
+                    t.lastnoloaded=noloaded;
                     t.setrow(i);
                 }
                 if (t.timeout != null) {
