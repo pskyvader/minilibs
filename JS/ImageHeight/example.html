@@ -65,7 +65,7 @@
                 var url=`https://via.placeholder.com/${width}x${height}?text=Image+${i}`;
             }
 
-            var tpl = `<a href="${url}" > <img src="" data-src="${url}" alt="example ${i}" /> </a>`;
+            var tpl = `<a href="${url}" > <img src="${url}" alt="example ${i}" /> </a>`;
             var img = $(tpl);
             $('.myclasscontainer').append(img);
         }
@@ -92,7 +92,7 @@
             minheight: 100,
             maxrow: 5,
             margin: 10,
-            lazyload:true, // enable placeholder is recomended along this option
+            lazyload:false, // enable placeholder is recomended along this option
             placeholder:true, // True If you want to see placeholders for images to be loaded, or False to wait until a line is completely loaded to show it
             showerrors: false // If you want to see broken images And console logs (images visibility overrided by placeholder)
         });
