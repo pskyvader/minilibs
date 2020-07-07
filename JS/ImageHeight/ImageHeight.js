@@ -50,6 +50,7 @@
                 "height": t.minheight
             }).hide();
 
+
             //agregar imagenes a la lista total de imagenes 
             $("img", t.container).each(function() {
                 let img = {
@@ -103,7 +104,7 @@
                     threshold: 0
                 }
 
-                t.observer = new IntersectionObserver(function(entries) {
+                t.observer = new IntersectionObserver(function(entries,a,b) {
                     Array.prototype.forEach.call(entries, function(entry) {
                         if (entry.isIntersecting) {
                             t.observer.unobserve(entry.target);
@@ -123,7 +124,7 @@
                 }, observerConfig);
 
                 t.imagelist.forEach(function(img) {
-                    t.observer.observe(img.img[0]);
+                    t.observer.observe(img.img[0],"asd");
                 });
 
             }
@@ -228,7 +229,7 @@
                 }
                 j++;
             }
-            if (!t.lazyload && t.placeholder && firstloaded + 1 < t.imagelist.length) {
+            if (t.placeholder && firstloaded + 1 < t.imagelist.length) {
                 //muestra al menos todos los cargados consecutivamente, va agregando al menos una fila visible por iteracion
                 //a menos que lazyload este activado
                 i = firstloaded + parseInt(timeoutstep / t.timeoutstep) * t.maxcolumn;
