@@ -96,7 +96,38 @@
                     t.setcolumns();
                 });
             });
+
+
+            if (t.lazyload) {
+                const observerConfig = {
+                    root: null,
+                    rootMargin: "0px",
+                    threshold: 0
+                }
+
+                t.observer = new IntersectionObserver(function(entries) {
+                    Array.prototype.forEach.call(entries, function(entry) {
+                        console.log("entries");
+                        if (entry.isIntersecting) {
+                            console.log("intersecting");
+                            self.observer.unobserve(entry.target);
+                            let src = entry.target.getAttribute("data-src");
+                            console.log("src",src);
+                            if ("img" == entry.target.tagName.toLowerCase()) {
+                                console.log("is image");
+                                if (src) {
+                                    console.log("is src",src);
+                                    entry.target.src = src;
+                                }
+                            }
+                        }
+                    });
+                }, observerConfig);
+            }
         }
+
+
+
 
         message(...msg) {
             let t = this;
@@ -155,6 +186,9 @@
 
         splitrows(timeoutstep = 0) {
             let t = this;
+            if (t.lazyload && timeoutstep > t.timeoutstep * 4) {
+                timeoutstep = t.timeoutstep;
+            }
             t.message("Split rows check", "timeout:", timeoutstep);
             if (t.allloaded) {
                 t.setrow(t.imagelist.length);
@@ -180,8 +214,9 @@
                 }
                 j++;
             }
-            if (t.placeholder && firstloaded + 1 < t.imagelist.length) {
+            if (!t.lazyload && t.placeholder && firstloaded + 1 < t.imagelist.length) {
                 //muestra al menos todos los cargados consecutivamente, va agregando al menos una fila visible por iteracion
+                //a menos que lazyload este activado
                 i = firstloaded + parseInt(timeoutstep / t.timeoutstep) * t.maxcolumn;
                 i = Math.min(i, t.imagelist.length);
             } else {
@@ -331,7 +366,7 @@
             minheight: 100,
             maxrow: 5,
             margin: 10,
-            lazyload:true, //experimental, use with caution
+            lazyload: false, //experimental, use with caution
             placeholder: false, // True If you want to see placeholders for images to be loaded, or False to wait until a line is completely loaded to show it
             showerrors: false // If you want to see broken images And console logs (images visibility overrided by placeholder)
         }, options);
