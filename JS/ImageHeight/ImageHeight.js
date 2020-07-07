@@ -59,22 +59,18 @@
                     "width": 0
                 };
                 t.imagelist.push(img);
-                $(this).on('load error', function() {
-                    img.loaded = true;
-                    img.width = 0;
-                    img.img.css({
-                        "margin": 0,
-                        "padding": t.margin,
-                        "background": "#fff"
-                    });
-                }).on('load', function() {
+                $(this).on('load', function() {
                     t.message("Image loaded", img);
+                    t.loadimage(img);
                 }).on('error', function() {
-                    img.error = true;
-                    t.message("Image load error", img);
+                    if (!t.lazyload || img.src != undefined) {
+                        img.error = true;
+                        t.loadimage(img);
+                        t.message("Image load error", img);
+                    }
                 });
                 if (this.complete) {
-                    //$(this).trigger('load');
+                    $(this).trigger('load');
                 }
 
             });
@@ -113,17 +109,31 @@
                             if ("img" == entry.target.tagName.toLowerCase()) {
                                 if (src) {
                                     entry.target.src = src;
+                                    $(entry.target).on("load",function(){
+                                        console.log("asdasdasd",this);
+                                    });
                                 }
                             }
                         }
                     });
                 }, observerConfig);
 
-                t.imagelist.forEach(function (img) {
+                t.imagelist.forEach(function(img) {
                     t.observer.observe(img.img[0]);
                 });
-                
+
             }
+        }
+
+        loadimage(img) {
+            let t=this;
+            img.loaded = true;
+            img.width = 0;
+            img.img.css({
+                "margin": 0,
+                "padding": t.margin,
+                "background": "#fff"
+            });
         }
 
 
