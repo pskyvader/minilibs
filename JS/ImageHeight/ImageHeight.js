@@ -12,6 +12,7 @@
             t.minheight = params.minheight;
             t.maxrow = params.maxrow;
             t.margin = params.margin;
+            t.lazyload = params.lazyload;
             t.placeholder = params.placeholder;
             t.showerrors = params.showerrors;
 
@@ -22,6 +23,7 @@
             t.last_column = 0;
             t.containerwidth = null;
             t.lasti = 0;
+            t.lastnoloaded = 0;
             t.maxcolumn = 1;
             t.allloaded = false;
 
@@ -42,12 +44,27 @@
                 "margin": 0
             });
             //estilo basico de imagen para calcular correctamente
+
             $("img", t.container).css({
                 "max-width": "100%",
                 "margin": t.margin,
-                "background": "#cccccc",
-                "height": t.minheight
-            }).hide();
+                "background": "#cccccc"
+            });
+            if (t.lazyload) {
+                $("img", t.container).css({
+                    "width": "100%",
+                    "height": t.minheight
+                })
+                if(!t.placeholder){
+                    $("img", t.container).hide();
+                }
+
+            } else {
+                $("img", t.container).css({
+                    "height": t.minheight
+                }).hide();
+            }
+
 
             //agregar imagenes a la lista total de imagenes 
             $("img", t.container).each(function() {
@@ -58,23 +75,14 @@
                     "width": 0
                 };
                 t.imagelist.push(img);
-                $(this).on('load error', function() {
-                    img.loaded = true;
-                    img.width = 0;
-                    img.img.css({
-                        "margin": 0,
-                        "padding": t.margin,
-                        "background": "#fff"
-                    });
-                }).on('load', function() {
-                    t.message("Image loaded", img);
-                }).on('error', function() {
-                    img.error = true;
-                    t.message("Image load error", img);
-                });
-                if (this.complete) {
-                    $(this).trigger('load');
+                if (!t.lazyload) {
+                    t.setloaded(img);
+                }else{
+                    if($(this).data("src")!=undefined){
+                        $(this).prop("src","data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
+                    }
                 }
+
 
             });
 
@@ -95,7 +103,72 @@
                     t.setcolumns();
                 });
             });
+
+
+            if (t.lazyload) {
+                const observerConfig = {
+                    root: null,
+                    rootMargin: 50*t.minheight+"px",
+                    threshold: 0
+                }
+
+                t.observer = new IntersectionObserver(function(entries) {
+                    Array.prototype.forEach.call(entries, function(entry) {
+                        if (entry.isIntersecting) {
+                            t.observer.unobserve(entry.target);
+                            if ("img" == entry.target.tagName.toLowerCase()) {
+                                let img = $(entry.target);
+                                let src = img.data("src");
+                                if (src) {
+                                    img.prop("src", src);
+                                    img.data("src", "");
+                                }
+
+                                const found = t.imagelist.find(function(element) {
+                                    return element.img[0] == img[0];
+                                });
+                                if (found != undefined) {
+                                    t.setloaded(found);
+                                }
+                            }
+                        }
+                    });
+                }, observerConfig);
+
+                t.imagelist.forEach(function(img) {
+                    t.observer.observe(img.img[0]);
+                });
+
+            }
         }
+        setloaded(img) {
+            let t = this;
+            $(img.img).on('load', function() {
+                t.message("Image loaded", img);
+                t.loadimage(img);
+            }).on('error', function() {
+                img.error = true;
+                t.loadimage(img);
+                t.message("Image load error", img);
+            });
+            if ($(img.img).complete) {
+                $(img.img).trigger('load');
+            }
+        }
+
+        loadimage(img) {
+            let t = this;
+            img.loaded = true;
+            img.width = 0;
+            img.img.css({
+                "margin": 0,
+                "padding": t.margin,
+                "background": "#fff"
+            });
+        }
+
+
+
 
         message(...msg) {
             let t = this;
@@ -154,6 +227,9 @@
 
         splitrows(timeoutstep = 0) {
             let t = this;
+            if (t.lazyload && timeoutstep > t.timeoutstep * 4) {
+                timeoutstep = t.timeoutstep;
+            }
             t.message("Split rows check", "timeout:", timeoutstep);
             if (t.allloaded) {
                 t.setrow(t.imagelist.length);
@@ -163,6 +239,7 @@
             let i = 0;
             let j = 0;
             let firstloaded = 0;
+            let lastloaded = 0;
             let noloaded = 0;
             // crear filas de imagenes que entren en el ancho maximo 
             //(ej: 2 fotos de 300 de ancho caben en 800 px, pero 3 fotos no. 
@@ -176,21 +253,28 @@
                     if (noloaded == 0) {
                         firstloaded = j;
                     }
+                    lastloaded = j;
                 }
                 j++;
             }
-            if (t.placeholder && firstloaded + 1 < t.imagelist.length) {
+            if (t.lazyload) {
+                i = lastloaded + t.maxcolumn;
+                if (i > t.imagelist.length) {
+                    i = t.imagelist.length;
+                }
+            } else if (t.placeholder && firstloaded + 1 < t.imagelist.length) {
                 //muestra al menos todos los cargados consecutivamente, va agregando al menos una fila visible por iteracion
+                //a menos que lazyload este activado
                 i = firstloaded + parseInt(timeoutstep / t.timeoutstep) * t.maxcolumn;
                 i = Math.min(i, t.imagelist.length);
-            } else {
+            } else if (!t.lazyload) {
                 i = firstloaded + 1;
             }
 
             j = 0;
             while (j < i) {
                 //muestra las fotos hasta este punto, si esta activado placeholder, show errors o la imagen esta cargada sin errores
-                if (t.placeholder || t.showerrors || t.imagelist[j].loaded && !t.imagelist[j].error) {
+                if (t.lazyload || t.placeholder || t.showerrors || t.imagelist[j].loaded && !t.imagelist[j].error) {
                     t.message("Show image", j);
                     t.imagelist[j].img.fadeIn("slow");
                 }
@@ -201,8 +285,9 @@
             if (i < t.imagelist.length || noloaded > 0) {
                 t.message("Image max calculate", i);
                 //solo vuelve a cargar si hay mas filas disponibles
-                if (i > t.lasti) {
+                if (i > t.lasti || noloaded < t.lastnoloaded) {
                     t.lasti = i;
+                    t.lastnoloaded = noloaded;
                     t.setrow(i);
                 }
                 if (t.timeout != null) {
@@ -330,6 +415,7 @@
             minheight: 100,
             maxrow: 5,
             margin: 10,
+            lazyload: false, //experimental, use with caution
             placeholder: false, // True If you want to see placeholders for images to be loaded, or False to wait until a line is completely loaded to show it
             showerrors: false // If you want to see broken images And console logs (images visibility overrided by placeholder)
         }, options);
