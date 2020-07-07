@@ -60,21 +60,22 @@
                     "width": 0
                 };
                 t.imagelist.push(img);
-                $(this).on('load', function() {
-                    if (!t.lazyload || img.img.data("src")== undefined) {
+                if (!t.lazyload) {
+                    $(this).on('load', function() {
                         t.message("Image loaded", img);
                         t.loadimage(img);
-                    }
-                }).on('error', function() {
-                    if (!t.lazyload || img.img.data("src")== undefined) {
+                    }).on('error', function() {
                         img.error = true;
                         t.loadimage(img);
                         t.message("Image load error", img);
+                    });
+                    if (this.complete) {
+                        $(this).trigger('load');
                     }
-                });
-                if (this.complete) {
-                    $(this).trigger('load');
+                } else {
+                    $(this).show();
                 }
+
 
             });
 
@@ -104,19 +105,22 @@
                     threshold: 0
                 }
 
-                t.observer = new IntersectionObserver(function(entries,a,b) {
+                t.observer = new IntersectionObserver(function(entries) {
                     Array.prototype.forEach.call(entries, function(entry) {
                         if (entry.isIntersecting) {
                             t.observer.unobserve(entry.target);
-                            let src = entry.target.getAttribute("data-src");
                             if ("img" == entry.target.tagName.toLowerCase()) {
+                                let img = $(entry.target);
+                                let src = img.data("src");
                                 if (src) {
-                                    entry.target.src = src;
-                                    
-                                    $(entry.target).on("load",function(){
-                                        console.log("zdasd");
-                                        //$(entry.target).trigger("load");
+                                    img.prop("src", src);
+                                    img.data("src", "");
+
+                                    const found = t.imagelist.find(element => {
+                                        console.log(element,element.img,img);
+                                        return element.img==img;
                                     });
+                                    console.log(found);
                                 }
                             }
                         }
@@ -124,7 +128,7 @@
                 }, observerConfig);
 
                 t.imagelist.forEach(function(img) {
-                    t.observer.observe(img.img[0],"asd");
+                    t.observer.observe(img.img[0]);
                 });
 
             }
