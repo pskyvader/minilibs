@@ -74,7 +74,7 @@
                     t.message("Image load error", img);
                 });
                 if (this.complete) {
-                    $(this).trigger('load');
+                    //$(this).trigger('load');
                 }
 
             });
@@ -107,22 +107,22 @@
 
                 t.observer = new IntersectionObserver(function(entries) {
                     Array.prototype.forEach.call(entries, function(entry) {
-                        console.log("entries");
                         if (entry.isIntersecting) {
-                            console.log("intersecting");
-                            self.observer.unobserve(entry.target);
+                            t.observer.unobserve(entry.target);
                             let src = entry.target.getAttribute("data-src");
-                            console.log("src",src);
                             if ("img" == entry.target.tagName.toLowerCase()) {
-                                console.log("is image");
                                 if (src) {
-                                    console.log("is src",src);
                                     entry.target.src = src;
                                 }
                             }
                         }
                     });
                 }, observerConfig);
+
+                t.imagelist.forEach(function (img) {
+                    t.observer.observe(img.img[0]);
+                });
+                
             }
         }
 
