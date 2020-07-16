@@ -52,8 +52,8 @@
             });
             if (t.lazyload) {
                 $("img", t.container).css({
-                    "width": "100%",
-                    "height": 10*t.minheight,
+                    "width": $(t.container).width()/t.maxrow-(t.margin*2),
+                    "height":  $(t.container).width()/t.maxrow-(t.margin*2),
                 });
                 if(!t.placeholder){
                     $("img", t.container).hide();
@@ -108,7 +108,7 @@
             if (t.lazyload) {
                 const observerConfig = {
                     root: null,
-                    rootMargin: 50*t.minheight+"px",
+                    rootMargin: 20*t.minheight+"px",
                     threshold: 0
                 }
 
@@ -150,6 +150,12 @@
                 img.error = true;
                 t.loadimage(img);
                 t.message("Image load error", img);
+            }).on("load error",function(){
+                if (t.timeout != null && t.timeout>t.timeoutstep) {
+                    console.log(t.timeout);
+                    clearTimeout(t.timeout);
+                    t.timeout = setTimeout(t.splitrows.bind(t), 0, 0);
+                }
             });
             if ($(img.img)[0].complete) {
                 $(img.img).trigger('load');
@@ -228,7 +234,7 @@
         splitrows(timeoutstep = 0) {
             let t = this;
             if (t.lazyload) {
-                timeoutstep = t.timeoutstep/2;
+                timeoutstep = t.timeoutstep*2;
             }
             t.message("Split rows check", "timeout:", timeoutstep);
             if (t.allloaded) {
