@@ -127,6 +127,7 @@
                                 const found = t.imagelist.find(function(element) {
                                     return element.img[0] == img[0];
                                 });
+                                console.log(found);
                                 if (found != undefined) {
                                     t.setloaded(found);
                                 }
