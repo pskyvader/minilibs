@@ -264,6 +264,7 @@
                 }
                 j++;
             }
+            
             if (t.lazyload) {
                 i = lastloaded + t.maxcolumn;
                 if (i > t.imagelist.length) {
