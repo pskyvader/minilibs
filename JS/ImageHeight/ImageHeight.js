@@ -127,9 +127,9 @@
                                 const found = t.imagelist.find(function(element) {
                                     return element.img[0] == img[0];
                                 });
-                                console.log(found);
                                 if (found != undefined) {
                                     t.setloaded(found);
+                                    console.log(found);
                                 }
                             }
                         }
@@ -145,19 +145,23 @@
         setloaded(img) {
             let t = this;
             $(img.img).on('load', function() {
+                console.log("loaded2");
                 t.message("Image loaded", img);
                 t.loadimage(img);
             }).on('error', function() {
+                console.log("loaded2 error");
                 img.error = true;
                 t.loadimage(img);
                 t.message("Image load error", img);
             });
             if ($(img.img).complete) {
+                console.log("loaded");
                 $(img.img).trigger('load');
             }
         }
 
         loadimage(img) {
+            console.log("loaded3");
             let t = this;
             img.loaded = true;
             img.width = 0;
@@ -228,7 +232,7 @@
 
         splitrows(timeoutstep = 0) {
             let t = this;
-            if (t.lazyload && timeoutstep > t.timeoutstep * 4) {
+            if (t.lazyload) {
                 timeoutstep = t.timeoutstep;
             }
             t.message("Split rows check", "timeout:", timeoutstep);
