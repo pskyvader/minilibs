@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>ImageHeight Example</title>
+    <title>Minilibs- ImageHeight</title>
     <!-- Extras Start -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
@@ -14,13 +14,95 @@
 
 <body>
     <div class="container">
-        <h1>Image Height Example</h1>
+        <h1>Image Height
+            <p class="d-inline h4">Get this code in
+                <a href="https://github.com/pskyvader/minilibs/tree/master/JS/ImageHeight">Github</a>
+            </p>
+        </h1>
+    </div>
+    <div class="container">
+        <a class="btn btn-primary  btn-sm" data-toggle="collapse" href="#options" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Toggle Options
+        </a>
+        <div class="collapse" id="options">
+            <form action="" method="get">
+                <h5 class="my-3">Options</h5>
+                <input type="hidden" name="options" value="true">
+                <div class="form-row">
+                    <div class="form-group input-group-sm col-sm-6 col-md-3">
+                        <label for="gallery">Gallery</label>
+                        <select name="gallery" class="form-control" id="gallery">
+                            <option value="lightgallery">lightgallery</option>
+                            <option value="fancybox">fancybox</option>
+                        </select>
+                    </div>
+                    <div class="form-group input-group-sm col-sm-6 col-md-3">
+                        <label for="imagesurl">Images provider</label>
+                        <select name="imagesurl" class="form-control" id="imagesurl">
+                            <option value="picsum">picsum</option>
+                            <option value="placeholder">placeholder</option>
+                        </select>
+                    </div>
+                    <div class="form-group input-group-sm col-sm-6 col-md-4">
+                        <label for="exampleimages">Example Images <small class="text-danger">(try with 1000!)</small> </label>
+                        <input name="exampleimages" type="number" class="form-control" min="1" max="1000" id="exampleimages">
+                    </div>
+                    <div class="form-group input-group-sm col-sm-6 col-md-2">
+                        <label for="containeractive">Other Options </label>
+                        <div class="form-check">
+                            <input name="containeractive" class="form-check-input" type="checkbox" id="containeractive">
+                            <label class="form-check-label" for="containeractive">
+                                Full size
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <h5 class="mb-3">Module Options</h5>
+                <div class="form-row">
+                    <div class="form-group input-group-sm col-sm-4 col-md-3 col-lg-2">
+                        <label for="minwidth">Min width</label>
+                        <input name="minwidth" min="100" step="10" type="number" class="form-control" id="minwidth">
+                    </div>
+                    <div class="form-group input-group-sm col-sm-4 col-md-3 col-lg-2">
+                        <label for="minheight">Min height</label>
+                        <input name="minheight" min="100" step="10" type="number" class="form-control" id="minheight">
+                    </div>
+                    <div class="form-group input-group-sm col-sm-4 col-md-3 col-lg-2">
+                        <label for="maxrow">Max images per row</label>
+                        <input name="maxrow" min="1" max="70" type="number" class="form-control" id="maxrow">
+                    </div>
+                    <div class="form-group input-group-sm col-sm-4 col-md-3 col-lg-2">
+                        <label for="margin">Margin</label>
+                        <input name="margin" min="0" type="number" class="form-control" id="margin">
+                    </div>
+                    <div class="form-group input-group-sm col-sm-8 col-md-8 col-lg-4">
+                        <label>Other options</label>
+                        <div class="form-check">
+                            <input name="lazyload" class="form-check-input" type="checkbox" id="lazyload">
+                            <label class="form-check-label" for="lazyload">
+                                Lazyload
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input name="placeholder" class="form-check-input" type="checkbox" id="placeholder">
+                            <label class="form-check-label" for="placeholder">
+                                Use placeholder while loading images
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input name="showerrors" class="form-check-input" type="checkbox" id="showerrors">
+                            <label class="form-check-label" for="showerrors">
+                                Show broken images and console messages
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Reload</button>
+            </form>
+        </div>
         <hr class="my-4">
     </div>
     <div class="myclasscontainer container" id="lightgallery">
-        <a href="https://picsum.photos/id/999/200/300">
-            <img src="https://picsum.photos/id/999/200/300" alt="example 1" />
-        </a>
     </div>
     <br>
     <div class="container my-4">
@@ -39,63 +121,83 @@
         </ul>
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="ImageHeight.js"></script>
-
+    <script src="ImageHeight.min.js"></script>
     <!--Extras Start-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/combine/npm/lightgallery,npm/lg-autoplay,npm/lg-fullscreen,npm/lg-hash,npm/lg-pager,npm/lg-share,npm/lg-thumbnail,npm/lg-video,npm/lg-zoom"></script>
-    
-
     <script>
-        var gallery = "lightgallery";//options: "lightgallery","fancybox"
-        var imagesrul="picsum";//options: "picsum","placeholder"
-
+        const UP = new URLSearchParams(window.location.search);
+        var options = UP.get("options") || null;
+        if (options != null) {
+            $("#options").addClass("show");
+        }
+        var defaults = {
+            gallery: UP.get("gallery") || "lightgallery", //options: "lightgallery","fancybox"
+            imagesurl: UP.get("imagesurl") || "picsum", //options: "picsum","placeholder"
+            exampleimages: parseInt(UP.get("exampleimages")) || 10, // try with 1000 !
+            containeractive: UP.get("containeractive") == "on" ? true : false, // enable placeholder is recomended along this option
+        };
+        var defaults_imageheight = {
+            minwidth: parseInt(UP.get("minwidth")) || 300,
+            minheight: parseInt(UP.get("minheight")) || 100,
+            maxrow: parseInt(UP.get("maxrow")) || 5,
+            margin: (UP.get("margin") != null) ? parseInt(UP.get("margin")) : 10,
+            lazyload: UP.get("lazyload") == "on" ? true : false, // enable placeholder is recomended along this option
+            placeholder: (UP.get("placeholder") == null && options != null) ? false : true, // True If you want to see placeholders for images to be loaded, or False to wait until a line is completely loaded to show it
+            showerrors: UP.get("showerrors") == "on" ? true : false // If you want to see broken images And console logs (images visibility overrided by placeholder)
+        };
+    </script>
+    <script>
+        $("#gallery").val(defaults.gallery);
+        $("#imagesurl").val(defaults.imagesurl);
+        $("#exampleimages").val(defaults.exampleimages);
+        $("#containeractive").prop('checked', defaults.containeractive);
+        $("#minwidth").val(defaults_imageheight.minwidth);
+        $("#minheight").val(defaults_imageheight.minheight);
+        $("#maxrow").val(defaults_imageheight.maxrow);
+        $("#margin").val(defaults_imageheight.margin);
+        $("#lazyload").prop('checked', defaults_imageheight.lazyload);
+        $("#placeholder").prop('checked', defaults_imageheight.placeholder);
+        $("#showerrors").prop('checked', defaults_imageheight.showerrors);
     </script>
     <script>
         //Add Example images to container
-        var exampleimages = 1000; // try with 1000 ! 
-        for (i = 0; i < exampleimages; i++) {
-            var width = parseInt(Math.random() * 10 + 3)*100;
-            var height = parseInt(Math.random() * 10 + 3)*100;
-            if (imagesrul=="picsum"){
-                var url=`https://picsum.photos/${width}/${height}`;
-            }else if(imagesrul=="placeholder"){
-                var url=`https://via.placeholder.com/${width}x${height}?text=Image+${i}`;
+        if(defaults.containeractive){
+            $('.myclasscontainer').removeClass("container").addClass("container-fluid");
+        }
+        for (i = 0; i < defaults.exampleimages; i++) {
+            var width = parseInt(Math.random() * 10 + 3) * 100;
+            var height = parseInt(Math.random() * 10 + 3) * 100;
+            if (defaults.imagesurl == "picsum") {
+                var url = `https://picsum.photos/${width}/${height}`;
+            } else if (defaults.imagesurl == "placeholder") {
+                var url = `https://via.placeholder.com/${width}x${height}?text=Image+${i+1}+(${width}x${height})`;
+            }
+            var tpl = `<a href="${url}" > <img src="${url}" alt="example ${i}" /> </a>`;
+            if (defaults_imageheight.lazyload) {
+                var tpl = `<a href="${url}" > <img src="" data-src="${url}" alt="example ${i}" /> </a>`;
             }
 
-            var tpl = `<a href="${url}" > <img src="${url}" alt="example ${i}" /> </a>`;
             var img = $(tpl);
             $('.myclasscontainer').append(img);
         }
         //Add Example images to container
     </script>
     <script>
-        if (gallery == "lightgallery") {
+        if (defaults.gallery == "lightgallery") {
             $('#lightgallery').lightGallery();
-        } else if (gallery == "fancybox") {
+        } else if (defaults.gallery == "fancybox") {
             $("#lightgallery a").on('click', function() {
                 $.fancybox.open($("#lightgallery a"));
                 return false;
             });
         }
     </script>
-
-
-
     <!--Extras End-->
-
     <script>
-        $('.myclasscontainer').ImageHeight({
-            minwidth: 300,
-            minheight: 100,
-            maxrow: 5,
-            margin: 10,
-            lazyload:false, // enable placeholder is recomended along this option
-            placeholder:true, // True If you want to see placeholders for images to be loaded, or False to wait until a line is completely loaded to show it
-            showerrors: false // If you want to see broken images And console logs (images visibility overrided by placeholder)
-        });
+        $('.myclasscontainer').ImageHeight(defaults_imageheight);
     </script>
 </body>
 
