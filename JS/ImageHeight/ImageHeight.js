@@ -53,8 +53,8 @@
             if (t.lazyload) {
                 $("img", t.container).css({
                     "width": "100%",
-                    "height": t.minheight
-                })
+                    "height": 10*t.minheight,
+                });
                 if(!t.placeholder){
                     $("img", t.container).hide();
                 }
@@ -129,7 +129,6 @@
                                 });
                                 if (found != undefined) {
                                     t.setloaded(found);
-                                    console.log(found);
                                 }
                             }
                         }
@@ -145,23 +144,19 @@
         setloaded(img) {
             let t = this;
             $(img.img).on('load', function() {
-                console.log("loaded2");
                 t.message("Image loaded", img);
                 t.loadimage(img);
             }).on('error', function() {
-                console.log("loaded2 error");
                 img.error = true;
                 t.loadimage(img);
                 t.message("Image load error", img);
             });
-            if ($(img.img).complete) {
-                console.log("loaded");
+            if ($(img.img)[0].complete) {
                 $(img.img).trigger('load');
             }
         }
 
         loadimage(img) {
-            console.log("loaded3");
             let t = this;
             img.loaded = true;
             img.width = 0;
@@ -233,7 +228,7 @@
         splitrows(timeoutstep = 0) {
             let t = this;
             if (t.lazyload) {
-                timeoutstep = t.timeoutstep;
+                timeoutstep = t.timeoutstep/2;
             }
             t.message("Split rows check", "timeout:", timeoutstep);
             if (t.allloaded) {
