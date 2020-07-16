@@ -29,6 +29,8 @@
 
             t.timeoutstep = 50;
             t.timeout = null;
+            t.timeoutlast = 0;
+            t.timeoutlasttime = Date.now();
 
             t.time = Date.now();
             //default data
@@ -52,10 +54,10 @@
             });
             if (t.lazyload) {
                 $("img", t.container).css({
-                    "width": $(t.container).width()/t.maxrow-(t.margin*2),
-                    "height":  $(t.container).width()/t.maxrow-(t.margin*2),
+                    "width": $(t.container).width() / t.maxrow - (t.margin * 2),
+                    "height": $(t.container).width() / t.maxrow - (t.margin * 2),
                 });
-                if(!t.placeholder){
+                if (!t.placeholder) {
                     $("img", t.container).hide();
                 }
 
@@ -77,9 +79,9 @@
                 t.imagelist.push(img);
                 if (!t.lazyload) {
                     t.setloaded(img);
-                }else{
-                    if($(this).data("src")!=undefined){
-                        $(this).prop("src","data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
+                } else {
+                    if ($(this).data("src") != undefined) {
+                        $(this).prop("src", "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
                     }
                 }
 
@@ -108,7 +110,7 @@
             if (t.lazyload) {
                 const observerConfig = {
                     root: null,
-                    rootMargin: 20*t.minheight+"px",
+                    rootMargin: 20 * t.minheight + "px",
                     threshold: 0
                 }
 
@@ -150,9 +152,11 @@
                 img.error = true;
                 t.loadimage(img);
                 t.message("Image load error", img);
-            }).on("load error",function(){
-                if (t.timeout != null && t.timeout>t.timeoutstep) {
-                    console.log(t.timeout);
+            }).on("load error", function() {
+                if (t.timeout != null && t.timeoutlast - (Date.now() - t.timeoutlasttime) > t.timeoutstep) {
+                    t.message("Reset timeout", t.timeoutlast - (Date.now() - t.timeoutlasttime), t.timeoutstep);
+                    t.timeoutlasttime = Date.now();
+                    t.timeoutlast = 0;
                     clearTimeout(t.timeout);
                     t.timeout = setTimeout(t.splitrows.bind(t), 0, 0);
                 }
@@ -233,9 +237,6 @@
 
         splitrows(timeoutstep = 0) {
             let t = this;
-            if (t.lazyload) {
-                timeoutstep = t.timeoutstep*2;
-            }
             t.message("Split rows check", "timeout:", timeoutstep);
             if (t.allloaded) {
                 t.setrow(t.imagelist.length);
@@ -299,7 +300,9 @@
                 if (t.timeout != null) {
                     clearTimeout(t.timeout);
                 }
-                t.timeout = setTimeout(t.splitrows.bind(t), timeoutstep + t.timeoutstep, timeoutstep + t.timeoutstep);
+                t.timeoutlast = timeoutstep + t.timeoutstep;
+                t.timeoutlasttime = Date.now();
+                t.timeout = setTimeout(t.splitrows.bind(t), t.timeoutlast, t.timeoutlast);
             } else {
                 t.message("All images loaded");
                 t.allloaded = true;
