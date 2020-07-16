@@ -153,7 +153,7 @@
                 t.loadimage(img);
                 t.message("Image load error", img);
             }).on("load error", function() {
-                if (t.timeout != null && t.timeoutlast - (Date.now() - t.timeoutlasttime) > t.timeoutstep) {
+                if (t.lazyload && t.timeout != null && t.timeoutlast - (Date.now() - t.timeoutlasttime) > t.timeoutstep) {
                     t.message("Reset timeout", t.timeoutlast - (Date.now() - t.timeoutlasttime), t.timeoutstep);
                     t.timeoutlasttime = Date.now();
                     t.timeoutlast = 0;
